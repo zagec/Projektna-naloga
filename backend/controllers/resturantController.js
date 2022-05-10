@@ -23,6 +23,37 @@ module.exports = {
         });
     },
 
+    showResturantsWithLocations: async function (req, res) {
+        let resturants = await ResturantModel.aggregate([
+            {
+                "$lookup": {
+                    "from": "location",
+                    "localField": "location_id",
+                    "foreignField": "id",
+                    "as": "lokacija"
+                }
+            }
+
+        ]).exec()
+        return res.json(resturants)
+    },
+
+    showResturantLocation: async function(req,res) {
+        let id = req.params.id
+        let resturant = await ResturantModel.aggregate([
+            {"$match": {"id": id}},
+            {
+                "$lookup": {
+                    "from": "location",
+                    "localField": "location_id",
+                    "foreignField": "id",
+                    "as": "lokacija"
+                }
+            }
+        ]).exec()
+        return res.json(resturant)
+    },
+
     /**
      * resturantController.show()
      */
@@ -52,11 +83,11 @@ module.exports = {
      */
     create: function (req, res) {
         var resturant = new ResturantModel({
-			name : req.body.name,
-			location_id : req.body.location_id,
-			description : req.body.description,
-			student_cupons : req.body.student_cupons,
-			working_hours : req.body.working_hours
+            name: req.body.name,
+            location_id: req.body.location_id,
+            description: req.body.description,
+            student_cupons: req.body.student_cupons,
+            working_hours: req.body.working_hours
         });
 
         resturant.save(function (err, resturant) {
@@ -92,11 +123,11 @@ module.exports = {
             }
 
             resturant.name = req.body.name ? req.body.name : resturant.name;
-			resturant.location_id = req.body.location_id ? req.body.location_id : resturant.location_id;
-			resturant.description = req.body.description ? req.body.description : resturant.description;
-			resturant.student_cupons = req.body.student_cupons ? req.body.student_cupons : resturant.student_cupons;
-			resturant.working_hours = req.body.working_hours ? req.body.working_hours : resturant.working_hours;
-			
+            resturant.location_id = req.body.location_id ? req.body.location_id : resturant.location_id;
+            resturant.description = req.body.description ? req.body.description : resturant.description;
+            resturant.student_cupons = req.body.student_cupons ? req.body.student_cupons : resturant.student_cupons;
+            resturant.working_hours = req.body.working_hours ? req.body.working_hours : resturant.working_hours;
+
             resturant.save(function (err, resturant) {
                 if (err) {
                     return res.status(500).json({
