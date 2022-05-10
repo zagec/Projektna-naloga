@@ -8,10 +8,12 @@ var resturantSchema = new Schema({
 	 	ref: 'location'
 	},
 	'description' : String,
-	'meni' : String, //svoj model
+	'menu' : {
+		type: Schema.Types.ObjectId,
+		ref: 'resturantMenu'
+	},
 	'student_cupons' : Boolean,
 	'working_hours' : Array
-	// ocene jedi v restavracijah
 });
 
 module.exports = mongoose.model('resturant', resturantSchema);

@@ -70,7 +70,7 @@ module.exports = {
 			username : req.body.username,
 			password : req.body.password,
 			email : req.body.email,
-			date : req.body.date
+			date : new Date()
         });
 
         user.save(function (err, user) {

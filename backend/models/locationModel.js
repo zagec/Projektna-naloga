@@ -3,8 +3,8 @@ var Schema   = mongoose.Schema;
 
 var locationSchema = new Schema({
 	'name' : String,
-	'cordinates' : String, //geojson format za kordinate
-	'description' : String
+	'longitude' : Number, //geojson format za kordinate
+	'latitude' : Number, //geojson format za kordinate
 });
 
 module.exports = mongoose.model('location', locationSchema);
