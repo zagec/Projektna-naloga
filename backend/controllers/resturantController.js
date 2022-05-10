@@ -38,7 +38,7 @@ module.exports = {
         return res.json(resturants)
     },
 
-    showResturantLocation: async function(req,res) {
+    showResturantLocation: async function (req, res) {
         let id = req.params.id
         let resturant = await ResturantModel.aggregate([
             {"$match": {"id": id}},
@@ -52,6 +52,40 @@ module.exports = {
             }
         ]).exec()
         return res.json(resturant)
+    },
+
+    showResturantMenu: async function (req, res) {
+        let id = req.params.id
+        let resturant = await ResturantModel.aggregate([
+            {"$match": {"id": id}},
+            {
+                "$lookup": {
+                    "from": "resturantMenu",
+                    "localField": "menu",
+                    "foreignField": "id",
+                    "as": "meni"
+                }
+            },
+            {"$unwind": "meni"},
+            {"$unwind": "meni.foods"},
+            {
+                "$lookup": {
+                    "from": "food",
+                    "localField": "foods",
+                    "foreignField": "id",
+                    "as": "food"
+                }
+            }
+        ]).exec()
+        return res.json(resturant)
+    },
+
+    showOnlyStudentCuponResturants: function(req,res){
+        let resturants = {}
+        ResturantModel.find({"student_cupons": true}).then((data)=>{
+            resturants = data
+        })
+        return res.json(resturants)
     },
 
     /**

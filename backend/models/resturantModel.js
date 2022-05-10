@@ -8,7 +8,7 @@ var resturantSchema = new Schema({
 	 	ref: 'location'
 	},
 	'description' : String,
-	'meni' : {
+	'menu' : {
 		type: Schema.Types.ObjectId,
 		ref: 'resturantMenu'
 	},
