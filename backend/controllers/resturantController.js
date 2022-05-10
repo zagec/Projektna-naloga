@@ -80,6 +80,10 @@ module.exports = {
         return res.json(resturant)
     },
 
+    showResturantsInRadius: function () {
+        //TODO: function implementation
+    },
+
     showOnlyStudentCuponResturants: function(req,res){
         let resturants = {}
         ResturantModel.find({"student_cupons": true}).then((data)=>{
