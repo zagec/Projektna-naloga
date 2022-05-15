@@ -8,6 +8,7 @@ var userController = require('../controllers/userController.js');
 router.get('/', userController.list);
 router.get('/login', userController.showLogin);
 router.get('/register', userController.showRegister);
+router.get('/confirm/:code', userController.verifyMail);
 
 /*
  * GET
