@@ -1,4 +1,5 @@
 var ResturantModel = require('../models/resturantModel.js');
+var restaurantRatingController = require('../controllers/restaurantRatingController.js')
 
 /**
  * resturantController.js
@@ -80,8 +81,54 @@ module.exports = {
         return res.json(resturant)
     },
 
+    // vrne restavracije v okolici kroga z dolocenim polmerom, katerega doloci uporabnik 
     showResturantsInRadius: function () {
-        //TODO: function implementation
+        desiredRadius = req.body.radius
+        navigator.geolocation.getCurrentPosition(succsess, error);
+
+        function success(pos){
+            ResturantModel.aggregate([
+                { $lookup: {
+                    from : "location", 
+                    localField: "location_id", 
+                    foreignField: "_id", 
+                    as : "resLocation"
+                }},
+                {
+                    $match: { 
+                        "resLocation.loc": { $geoWithin: { $centerSphere: [ [pos.coords.latitude, pos.coords.longitude], desiredRadius ] } }
+                }}
+                ]).exec(function (err, resturants) {
+                if (err) {
+                    return res.status(500).json({
+                        message: 'Error when getting resturants.',
+                        error: err
+                    });
+                }
+    
+                return res.json(resturants);
+            })
+        }
+
+        function error(error){
+            var errorMsg = ""
+            switch(error.code) {
+                case error.PERMISSION_DENIED:
+                    errorMsg = "User denied the request for Geolocation."
+                    break;
+                case error.POSITION_UNAVAILABLE:
+                    errorMsg = "Location information is unavailable."
+                    break;
+                case error.UNKNOWN_ERROR:
+                    errorMsg = "An unknown error occurred."
+                    break;
+                }
+
+              return res.status(500).json({
+                message: errorMsg,
+                error: err
+            });
+        }
     },
 
     showOnlyStudentCuponResturants: function(req,res){
