@@ -158,6 +158,9 @@ module.exports = {
                     message: 'No such resturant'
                 });
             }
+            
+            // gettanje ratings iz restaurant ratings controllerja
+            // var ratings = restaurantRatingController.getRestaurantsRatings(req, res);
 
             return res.json(resturant);
         });
