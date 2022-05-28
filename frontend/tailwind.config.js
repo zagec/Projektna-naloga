@@ -17,6 +17,7 @@ module.exports = {
       earth: '#DAAD86',
       earth2: '#7F6B5A',
       blueish: '#659DBD',
+      softBlue: '#E0EAF5',
       inherit: colors2.inherit,
       current: colors2.current,
       transparent: colors2.transparent,
@@ -48,7 +49,14 @@ module.exports = {
     extend: { 
       backgroundImage: {
         'split-white-black': "linear-gradient(to bottom, white 50% , #fdba74 50%);"
-      }
+      },
+      backgroundSize: {
+        'size-200': '200% 200%',
+      },
+      backgroundPosition: {
+          'pos-0': '0% 0%',
+          'pos-100': '100% 100%',
+      },
     },
   },
   plugins: [],

@@ -35,7 +35,7 @@ const Registration = () => {
             setUsername("");
             setPassword("");
             setEmail("");
-            setError("Registration failed");
+            setError("Neuspešna registracija :(");
         }
     }
 
@@ -65,10 +65,14 @@ const Registration = () => {
                     <label className="error" id="repPswrdErr"></label> <br />
                 </div>
                 <label className='text-sm text-red-700 ml-8 animate-pulse'>{error}</label>
+                <div className='flex'>
+                    <div className='text-xs ml-4 text-blue-700 hover:cursor-pointer hover:animate-pulse'><NavLink to='/login'>Račun že ustvarjen? Prijavite se!</NavLink></div>
+                    </div>
             </div>
             <div className='w-48  ml-auto mr-auto'>
 
-                <button type="submit" name="send" className="bg-gradient-to-b from-slate-500 via-slate-400 to-slate-300 p-2 rounded-b-xl text-base text-center font-semibold w-48 text-slate-800">Prijavi se</button>
+                <button type="submit" name="send" className="bg-gradient-to-b from-slate-500 via-slate-400 to-slate-300 p-2 rounded-b-xl text-base text-center font-semibold w-48 text-slate-800 duration-200">Registriraj se</button>
+                {/* <button type="submit" name="send" className="m-2 p-10 text-white rounded-xl transition-all duration-500 bg-gradient-to-tl from-purple-800 via-purple-600 to-purple-400 bg-size-200 bg-pos-0 hover:bg-pos-100">Registriraj se</button> */}
                 </div>
         </form>
       </div>

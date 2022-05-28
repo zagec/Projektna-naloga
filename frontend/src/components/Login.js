@@ -31,7 +31,7 @@ const Login = () => {
         } else {
             setUsername("");
             setPassword("");
-            setError("Invalid username or password");
+            setError("Neuspešna prijava :(");
         }
     }
 
@@ -39,7 +39,7 @@ const Login = () => {
     <div className='mt-12'>
         <div className='ml-auto mr-auto w-1/3'>
             <form className="ml-auto mr-auto" onSubmit={login}>
-                <div className='bg-slate-300 px-6 rounded-xl'>
+                <div className='bg-slate-300 px-6 rounded-xl pt-3'>
                     <IoPersonCircleSharp className='ml-auto mr-auto ' size={50}/>
                     <div className="mb-6 flex mt-5">
                         <div className='bg-sunshine w-8 text-center'><BsFillPersonFill className='pt-2 ml-auto mr-auto' size={25}/></div>
@@ -57,7 +57,7 @@ const Login = () => {
                 </div>
                 <div className='w-48  ml-auto mr-auto'>
 
-                <button type="submit" name="send" className="bg-gradient-to-b from-slate-500 via-slate-400 to-slate-300 p-2 rounded-b-xl text-base text-center font-semibold w-48 text-slate-800">Prijavi se</button>
+                <button type="submit" name="send" className="bg-gradient-to-b from-slate-500 via-slate-400 to-slate-300 p-2 rounded-b-xl text-base text-center font-semibold w-48 text-slate-800 transition-all duration-500">Prijavi se</button>
                 </div>
             </form>
         </div>

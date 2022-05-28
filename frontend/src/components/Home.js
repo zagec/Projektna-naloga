@@ -1,8 +1,11 @@
 import React from 'react'
+import RestaurantMenu from './RestaurantMenu'
 
 const Home = () => {
   return (
-    <div>Home</div>
+    <div className=''>
+        <RestaurantMenu  />
+    </div>
   )
 }
 
