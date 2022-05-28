@@ -13,6 +13,13 @@ module.exports = {
       powder: '#8FD8D2',
       warm: '#DF744A',
       lemon: '#DC8239',
+      sunshine: '#F78733',
+      earth: '#DAAD86',
+      earth2: '#7F6B5A',
+      blueish: '#659DBD',
+      inherit: colors2.inherit,
+      current: colors2.current,
+      transparent: colors2.transparent,
       black: colors2.black,
       white: colors2.white,
       slate: colors2.slate,
@@ -38,7 +45,11 @@ module.exports = {
       pink: colors2.pink,
       rose: colors2.rose,
     },
-    extend: {},
+    extend: { 
+      backgroundImage: {
+        'split-white-black': "linear-gradient(to bottom, white 50% , #fdba74 50%);"
+      }
+    },
   },
   plugins: [],
 }
