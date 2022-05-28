@@ -2,12 +2,13 @@ import React from 'react'
 import { UserContext } from "../userContext";
 import { MdOutlineFastfood } from "react-icons/md";
 import {NavLink} from 'react-router-dom'
+import { Icon } from './Icon';
 
 const Header = () => {
   return (
     <div className="bg-lemon p-3 text-xl flex text-slate-200 font-sans">
     <div className="ml-8 text-2xl font-bold flex">
-        <MdOutlineFastfood className='mr-2' />
+        <Icon />
         Restavrantko
     </div>
   
