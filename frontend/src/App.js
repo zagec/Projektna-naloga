@@ -17,22 +17,25 @@ function App() {
   }
 
   return (
-    <BrowserRouter>
-      <UserContext.Provider value={{
-          user: user,
-          setUserContext: updateUserData
-        }}>
-      < Header/>
-      <Routes>
-           <Route path="/" exact element={<Home />}></Route>
-          <Route path="/login" element={<Login />}></Route>
-          <Route path="/register" element={<Registration />}></Route>
-          <Route path="/logout" element={<Logout />}></Route>
-          {/*<Route path="/profile" element={<Profile />}></Route>
-          <Route path="/photos/:id" element={<ShowPhoto />}></Route> */}
-        </Routes>
-      </UserContext.Provider>
-    </BrowserRouter>
+    <div className='bg-softBlue min-h-screen'>
+      <BrowserRouter>
+        <UserContext.Provider value={{
+            user: user,
+            setUserContext: updateUserData
+          }}>
+        < Header/>
+        <Routes>
+            <Route path="/" exact element={<Home />}></Route>
+            <Route path="/login" element={<Login />}></Route>
+            <Route path="/register" element={<Registration />}></Route>
+            <Route path="/logout" element={<Logout />}></Route>
+            {/*<Route path="/profile" element={<Profile />}></Route>
+            <Route path="/photos/:id" element={<ShowPhoto />}></Route> */}
+          </Routes>
+        </UserContext.Provider>
+      </BrowserRouter>
+    </div>
+
 
   );
 }

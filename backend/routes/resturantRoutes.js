@@ -5,7 +5,7 @@ var resturantController = require('../controllers/resturantController.js');
 /*
  * GET
  */
-router.get('/', resturantController.list);
+router.get('/', resturantController.list2);
 
 /*
  * GET

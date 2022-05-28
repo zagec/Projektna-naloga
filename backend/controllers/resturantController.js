@@ -11,7 +11,12 @@ module.exports = {
     /**
      * resturantController.list()
      */
+ list2: function (req, res) {
+     console.log('asdf')
+ },
+
     list: function (req, res) {
+        console.log("here")
         ResturantModel.find(function (err, resturants) {
             if (err) {
                 return res.status(500).json({

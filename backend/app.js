@@ -4,9 +4,17 @@ var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 const dotenv = require('dotenv')
-
+const config = require("./auth.config");
+const { default: mongoose } = require('mongoose');
 var indexRouter = require('./routes/index');
-var usersRouter = require('./routes/users');
+var usersRouter = require('./routes/userRoutes');
+var foodRouter = require('./routes/foodRoutes');
+var journeyRouter = require('./routes/journeyRoutes');
+var jwtRouter = require('./routes/jwtRoutes');
+var locationRouter = require('./routes/locationRoutes');
+var restaurantRatingRouter = require('./routes/restaurantRatingRoutes');
+var restaurantMenuRouter = require('./routes/resturantMenuRoutes');
+var restaurantsRouter = require('./routes/resturantRoutes');
 const jwt = require("jsonwebtoken");
 
 // get config vars
@@ -14,6 +22,32 @@ const jwt = require("jsonwebtoken");
 // access config var
 //process.env.TOKEN_SECRET;
 
+
+const { MongoClient, ServerApiVersion } = require('mongodb');
+
+process.env.DB_USERNAME = config.databaseUsername;
+process.env.DB_PASSWORD = config.databasePassword;
+
+console.log(process.env.DB_USERNAME)
+
+
+// const uri = 'mongodb+srv://'+ process.env.DB_USERNAME+':'+process.env.DB_PASSWORD+'@cluster0.urwjc.mongodb.net/?retryWrites=true&w=majority';
+// const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true, serverApi: ServerApiVersion.v1 });
+// client.connect(err => {
+//   const collection = client.db("test").collection("devices");
+//   console.log('connected')
+//   client.close();
+// });
+
+const mongoDB = 'mongodb+srv://'+ process.env.DB_USERNAME+':'+process.env.DB_PASSWORD+'@cluster0.urwjc.mongodb.net/Prikazatelj_Restavracij';
+
+mongoose.connect(mongoDB).then(() => {
+  
+}).catch((err) => console.log('not connected'))
+
+mongoose.Promise = global.Promise;
+var db = mongoose.connection;
+db.on('error', console.error.bind(console, 'MongoDB connection error:'));
 var app = express();
 
 var cors = require('cors');
@@ -62,8 +96,30 @@ app.use((req,res,next)=>{
     authenticateToken(req,res,next)
 })
 
+var session = require('express-session');
+var MongoStore = require('connect-mongo');
+app.use(session({
+  secret: 'work hard',
+  resave: true,
+  saveUninitialized: false,
+  store: MongoStore.create({mongoUrl: mongoDB})
+}));
+//Shranimo sejne spremenljivke v locals
+//Tako lahko do njih dostopamo v vseh view-ih (glej layout.hbs)
+app.use(function (req, res, next) {
+  res.locals.session = req.session;
+  next();
+});
+
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
+app.use('/food', foodRouter);
+app.use('/journey', journeyRouter);
+app.use('/jwt', jwtRouter);
+app.use('/location', locationRouter);
+app.use('/restaurantRating', restaurantRatingRouter);
+app.use('/restaurantMenu', restaurantMenuRouter);
+app.use('/restaurants', restaurantsRouter);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {

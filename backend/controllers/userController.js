@@ -2,6 +2,7 @@ var UserModel = require('../models/userModel.js');
 const jwt = require("jsonwebtoken");
 const JwtModel = require("../models/jwtModel");
 const config = require("../auth.config");
+const nodemailer = require("nodemailer");
 
 
 function generateAccessToken(username) {
