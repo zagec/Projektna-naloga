@@ -42,7 +42,7 @@ const Registration = () => {
   return (
       <div className='mt-12 ml-auto mr-auto px-6 w-1/3 '>
         <form className="ml-auto  mr-auto " onSubmit={register}>
-            <div className='bg-slate-300 p-6 rounded-xl'>
+            <div className='bg-slate-100 p-6 rounded-xl'>
                 <div className='font-bold text-xl text-slate-600'>
                     Ustvari račun
                 </div>
@@ -71,7 +71,7 @@ const Registration = () => {
             </div>
             <div className='w-48  ml-auto mr-auto'>
 
-                <button type="submit" name="send" className="bg-gradient-to-b from-slate-500 via-slate-400 to-slate-300 p-2 rounded-b-xl text-base text-center font-semibold w-48 text-slate-800 duration-200">Registriraj se</button>
+                <button type="submit" name="send" className="bg-gradient-to-b from-slate-500  to-slate-100 p-2 rounded-b-xl text-base text-center font-semibold w-48 text-slate-800 duration-200">Registriraj se</button>
                 {/* <button type="submit" name="send" className="m-2 p-10 text-white rounded-xl transition-all duration-500 bg-gradient-to-tl from-purple-800 via-purple-600 to-purple-400 bg-size-200 bg-pos-0 hover:bg-pos-100">Registriraj se</button> */}
                 </div>
         </form>

@@ -17,6 +17,7 @@ var restaurantMenuRouter = require('./routes/resturantMenuRoutes');
 var restaurantsRouter = require('./routes/resturantRoutes');
 const jwt = require("jsonwebtoken");
 
+
 // get config vars
 //dotenv.config();
 // access config var
@@ -27,17 +28,6 @@ const { MongoClient, ServerApiVersion } = require('mongodb');
 
 process.env.DB_USERNAME = config.databaseUsername;
 process.env.DB_PASSWORD = config.databasePassword;
-
-console.log(process.env.DB_USERNAME)
-
-
-// const uri = 'mongodb+srv://'+ process.env.DB_USERNAME+':'+process.env.DB_PASSWORD+'@cluster0.urwjc.mongodb.net/?retryWrites=true&w=majority';
-// const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true, serverApi: ServerApiVersion.v1 });
-// client.connect(err => {
-//   const collection = client.db("test").collection("devices");
-//   console.log('connected')
-//   client.close();
-// });
 
 const mongoDB = 'mongodb+srv://'+ process.env.DB_USERNAME+':'+process.env.DB_PASSWORD+'@cluster0.urwjc.mongodb.net/Prikazatelj_Restavracij';
 
@@ -76,25 +66,24 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 function authenticateToken(req, res, next) {
-    const authHeader = req.headers['authorization']
-    const token = authHeader && authHeader.split(' ')[1]
+    // const authHeader = req.headers['authorization']
+    // const token = authHeader && authHeader.split(' ')[1]
+    // if (token == null) return res.sendStatus(403)
 
-    if (token == null) return res.sendStatus(401)
+    // jwt.verify(token, process.env.TOKEN_SECRET, function(err, user) {
+    //     console.log(err)
 
-    jwt.verify(token, process.env.TOKEN_SECRET, function(err, user) {
-        console.log(err)
+    //     if (err) return res.sendStatus(403)
 
-        if (err) return res.sendStatus(403)
+    //     req.user = user
 
-        req.user = user
-
-        next()
-    })
+    //     next()
+    // })
 }
 
-app.use((req,res,next)=>{
-    authenticateToken(req,res,next)
-})
+// app.use((req,res,next)=>{
+//     authenticateToken(req,res,next)
+// })
 
 var session = require('express-session');
 var MongoStore = require('connect-mongo');

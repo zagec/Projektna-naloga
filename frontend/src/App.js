@@ -17,7 +17,7 @@ function App() {
   }
 
   return (
-    <div className='bg-softBlue min-h-screen'>
+    <div className='bg-slate-200 min-h-screen'>
       <BrowserRouter>
         <UserContext.Provider value={{
             user: user,

@@ -1,6 +1,6 @@
 var ResturantModel = require('../models/resturantModel.js');
-var restaurantRatingController = require('../controllers/restaurantRatingController.js')
-
+var restaurantRatingController = require('../controllers/restaurantRatingController.js');
+const fetch = require("node-fetch");
 /**
  * resturantController.js
  *
@@ -11,19 +11,41 @@ module.exports = {
     /**
      * resturantController.list()
      */
- list2: function (req, res) {
-     console.log('asdf')
- },
+     removeAll: function(req, res){
+         console.log('asdd')
+        ResturantModel.remove({}).exec(function (err, resturant) {
+            if (err) {
+                return res.status(500).json({
+                    message: 'Error when deleting the resturant.',
+                    error: err
+                });
+            }
+
+            return res.status(204).json();
+        });
+     },
 
     list: function (req, res) {
-        console.log("here")
         ResturantModel.find(function (err, resturants) {
+
             if (err) {
                 return res.status(500).json({
                     message: 'Error when getting resturant.',
                     error: err
                 });
             }
+
+            // resturants.map((rest) => {
+            //     // const getRestaurants = async function(){
+            //     //     const res = await fetch('http://localhost:3001/restaurantRating/fromRestaurant/'+rest._id);
+            //     //     const data = await res.json();
+            //     //     // rest.ratings=data
+            //     //     // console.log(rest._id + data.length)
+            //     // }
+            //     // getRestaurants()
+            //     // const ratings = restaurantRatingController.getRestaurantsRatings2(rest._id)
+            //     // rest.ratings.push(ratings)
+            // });
 
             return res.json(resturants);
         });
@@ -250,5 +272,6 @@ module.exports = {
 
             return res.status(204).json();
         });
-    }
+    },
+
 };
