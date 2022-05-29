@@ -13,19 +13,22 @@ const transport = nodemailer.createTransport({
     service: "Gmail",
     auth: {
       user: config.user,
-      pass: config.pass,
+      pass: config.pass2,
     },
+    tls: {
+        rejectUnauthorized: false
+    }
   });
 
 function sendConfirmationEmail(name, email, confirmationCode){
     transport.sendMail({
-        from: user,
+        from: config.user,
         to: email,
         subject: "Potrdi svoj gmail naslov",
         html: `<h1>Gmail racun</h1>
             <h2>Zdravo ${name}</h2>
             <p>Za potrdilo stisni na spodnji link</p>
-            <a href=http://localhost:3000/users/confirm/${confirmationCode}> Stisni me</a>
+            <a href=http://localhost:3000/verifyUser/${confirmationCode}> Stisni me</a>
             </div>`,
     }).catch(err => console.log(err));
 };
@@ -98,6 +101,7 @@ module.exports = {
 			password : req.body.password,
 			email : req.body.email,
 			date : new Date(),
+            admin : false,
             restaurantVisits : [],
             confirmationCode: token
         });
@@ -129,7 +133,7 @@ module.exports = {
             }
             req.session.userId = user._id
 
-            const token = generateAccessToken({ username: req.body.username });
+            /*const token = generateAccessToken({ username: req.body.username });
             var jwt = new JwtModel({
                 token : token,
                 user_id : user._id,
@@ -142,8 +146,9 @@ module.exports = {
                         error: err
                     });
                 }
-                return res.status(201).json(jwt);
-            });
+                .json(jwt);
+            });*/
+            return res.status(201)
         })
     },
 

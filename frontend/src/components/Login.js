@@ -1,4 +1,4 @@
-// import Button from './Button';
+// import RedirectButton from './RedirectButton';
 import { useContext, useState, userContext } from 'react';
 import { UserContext } from '../userContext';
 import { IoPersonCircleSharp } from "react-icons/io5";
