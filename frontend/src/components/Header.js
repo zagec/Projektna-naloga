@@ -13,18 +13,18 @@ const Header = () => {
     </div>
   
     <div className="ml-auto mr-10">
-      <NavLink className="mr-4" to="/">Domov</NavLink>
+      <NavLink className="mr-4 transition ease-in-out hover:text-slate-400 duration-300" to="/">Domov</NavLink>
       <UserContext.Consumer>
         {context => (
             context.user ?
               <>
-                <NavLink className='mr-4' to="/profile">Profil</NavLink>
-                <NavLink className='mr-4' to="/logout">Odjavi se</NavLink>
+                <NavLink className='mr-4 transition ease-in-out   group hover:text-slate-400 duration-300' to="/profile">Profil</NavLink>
+                <NavLink className='mr-4 transition ease-in-out  group hover:text-slate-400 duration-300' to="/logout">Odjavi se</NavLink>
               </>
             :
               <>
-                <NavLink className='mr-4' to='/login'>Prijava</NavLink>
-                <NavLink className='' to='/register'>Registracija</NavLink>
+                <NavLink className='mr-4 transition ease-in-out  group hover:text-slate-400 duration-300' to='/login'>Prijava</NavLink>
+                <NavLink className='transition ease-in-out  group hover:text-slate-400 duration-300' to='/register'>Registracija</NavLink>
               </>
           )}
         </UserContext.Consumer>

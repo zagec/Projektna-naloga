@@ -128,6 +128,20 @@ module.exports = {
 
     getRestaurantsRatings: function(req, res){
         restId = req.params.id
+        
+        RestaurantratingModel.find({ 'restaurant_tk' : restId }).exec(function (err, restaurantRatings) {
+            if (err) {
+                return res.status(500).json({
+                    message: 'Error when getting restaurantRating with id ' + restId,
+                    error: err
+                });
+            }
+            return res.json(restaurantRatings);
+        });
+    },
+
+    getRestaurantsRatings2: function(req, res, id){
+        restId = req.params.id
         RestaurantratingModel.find({ 'restaurant_tk' : restId }).exec(function (err, restaurantRatings) {
             if (err) {
                 return res.status(500).json({

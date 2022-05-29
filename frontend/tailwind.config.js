@@ -18,6 +18,8 @@ module.exports = {
       earth2: '#7F6B5A',
       blueish: '#659DBD',
       softBlue: '#E0EAF5',
+      coffee: '#f4f0df',
+      coffee2: '#dbc1ac',
       inherit: colors2.inherit,
       current: colors2.current,
       transparent: colors2.transparent,
