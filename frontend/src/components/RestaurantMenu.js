@@ -20,7 +20,7 @@ const RestaurantMenu = () => {
 
 
   return (
-    <div className='w-3/5 ml-auto mr-auto mt-12'>
+    <div className='w-3/5 justify-center ml-20 mt-12'>
         <div className='flex mb-2'>
             <div className='pt-1.5'>Razvrsti po: </div>
             <Dropdown />

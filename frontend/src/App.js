@@ -6,6 +6,8 @@ import Login from './components/Login';
 import Logout from './components/Logout';
 import Home from './components/Home';
 import Registration from './components/Registration';
+import Verify from './components/Verify';
+import RestaurantsNearMe from './components/RestaurantsNearMe';
 
 
 function App() {
@@ -29,6 +31,8 @@ function App() {
             <Route path="/login" element={<Login />}></Route>
             <Route path="/register" element={<Registration />}></Route>
             <Route path="/logout" element={<Logout />}></Route>
+            <Route path="/verifyUser/:id" element={<Verify />}></Route>
+            <Route path="/findNearMe" element={<RestaurantsNearMe />}></Route>
             {/*<Route path="/profile" element={<Profile />}></Route>
             <Route path="/photos/:id" element={<ShowPhoto />}></Route> */}
           </Routes>

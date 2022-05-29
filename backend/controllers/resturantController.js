@@ -36,13 +36,13 @@ module.exports = {
             }
 
             // resturants.map((rest) => {
-            //     // const getRestaurants = async function(){
-            //     //     const res = await fetch('http://localhost:3001/restaurantRating/fromRestaurant/'+rest._id);
-            //     //     const data = await res.json();
-            //     //     // rest.ratings=data
-            //     //     // console.log(rest._id + data.length)
-            //     // }
-            //     // getRestaurants()
+            //     const getRestaurants = async function(){
+            //         const res = await fetch('http://localhost:3001/restaurantRating/fromRestaurant/'+rest._id);
+            //         const data = await res.json();
+            //         // rest.ratings=data
+            //         // console.log(rest._id + data.length)
+            //     }
+            //     getRestaurants()
             //     // const ratings = restaurantRatingController.getRestaurantsRatings2(rest._id)
             //     // rest.ratings.push(ratings)
             // });
@@ -109,23 +109,15 @@ module.exports = {
     },
 
     // vrne restavracije v okolici kroga z dolocenim polmerom, katerega doloci uporabnik 
-    showResturantsInRadius: function () {
-        desiredRadius = req.body.radius
-        navigator.geolocation.getCurrentPosition(succsess, error);
+    showResturantsInRadius: async function (req, res) {
+        desiredRadius = req.params.radius
+        latitude = req.params.latitude
+        longitude = req.params.longitude
+        console.log(latitude +  ' ' +longitude + ' ' + desiredRadius)
 
-        function success(pos){
-            ResturantModel.aggregate([
-                { $lookup: {
-                    from : "location", 
-                    localField: "location_id", 
-                    foreignField: "_id", 
-                    as : "resLocation"
-                }},
-                {
-                    $match: { 
-                        "resLocation.loc": { $geoWithin: { $centerSphere: [ [pos.coords.latitude, pos.coords.longitude], desiredRadius ] } }
-                }}
-                ]).exec(function (err, resturants) {
+            ResturantModel.find( {name: "Big Panda - dostava"})
+            .populate('location_id')
+            .exec(function (err, resturants) {
                 if (err) {
                     return res.status(500).json({
                         message: 'Error when getting resturants.',
@@ -135,7 +127,29 @@ module.exports = {
     
                 return res.json(resturants);
             })
-        }
+            // ResturantModel.aggregate([
+            //     { $lookup: {
+            //         from : "location", 
+            //         localField: "location_id", 
+            //         foreignField: "_id", 
+            //         as : "resLocation"
+            //     }},
+            //     {
+            //         $match: { 
+            //             "resLocation.name": "Big Panda - dostava"
+            //             // "resLocation.loc": { $geoWithin: { $centerSphere: [ [latitude, longitude], desiredRadius ] } }
+            //     }}
+            //     ]).exec(function (err, resturants) {
+            //     if (err) {
+            //         return res.status(500).json({
+            //             message: 'Error when getting resturants.',
+            //             error: err
+            //         });
+            //     }
+    
+            //     return res.json(resturants);
+            // })
+        
 
         function error(error){
             var errorMsg = ""

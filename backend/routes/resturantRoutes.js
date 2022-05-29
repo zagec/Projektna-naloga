@@ -7,6 +7,7 @@ var resturantController = require('../controllers/resturantController.js');
  */
 router.get('/', resturantController.list);
 router.get('/removeAll', resturantController.removeAll);
+router.get('/nearMe/:latitude/:longitude/:radius', resturantController.showResturantsInRadius);
 
 /*
  * GET
