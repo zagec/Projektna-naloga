@@ -6,7 +6,7 @@ function User(props){
             <div className="mb-2 font-bold text-lg group-hover:text-white duration-300">{props.user.username}</div>
             <div className="group-hover:text-white duration-300">{props.user.email}</div>
             <input type="hidden" value={props.user._id}/>
-            <RedirectButton name="Modify"/>
+            <RedirectButton name="Modify" value={props.user._id}/>
         </div>
     )
 }
