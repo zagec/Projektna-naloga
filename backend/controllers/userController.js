@@ -101,10 +101,10 @@ module.exports = {
 			password : req.body.password,
 			email : req.body.email,
 			date : new Date(),
-            admin : false,
             restaurantVisits : [],
             confirmationCode: token
         });
+        console.log(user)
 
         user.save(function (err, user) {
             if (err) {
@@ -125,31 +125,40 @@ module.exports = {
     },
 
     login: function (req,res,next) {
-        UserModel.authenticate(req.body.username, req.body.password, function(err,user){
+        UserModel.authenticate(req.body.username, req.body.password, function(err, user){
             if(err || !user){
-                var err = new Error("Wrong username or password");
+                var err = new Error('Wrong username or paassword');
                 err.status = 401;
                 return next(err);
             }
-            req.session.userId = user._id
+            req.session.userId = user._id;
+            //res.redirect('/users/profile');
+            return res.json(user);
+        });
+        // UserModel.authenticate(req.body.username, req.body.password, function(err,user){
+        //     if(err || !user){
+        //         var err = new Error("Wrong username or password");
+        //         err.status = 401;
+        //         return next(err);
+        //     }
+        //     req.session.userId = user._id
 
-            /*const token = generateAccessToken({ username: req.body.username });
-            var jwt = new JwtModel({
-                token : token,
-                user_id : user._id,
-                date : new Date()
-            });
-            jwt.save(function (err, jwt) {
-                if (err) {
-                    return res.status(500).json({
-                        message: 'Error when creating jwt',
-                        error: err
-                    });
-                }
-                .json(jwt);
-            });*/
-            return res.status(201)
-        })
+        //     const token = generateAccessToken({ username: req.body.username });
+        //     var jwt = new JwtModel({
+        //         token : token,
+        //         user_id : user._id,
+        //         date : new Date()
+        //     });
+        //     jwt.save(function (err, jwt) {
+        //         if (err) {
+        //             return res.status(500).json({
+        //                 message: 'Error when creating jwt',
+        //                 error: err
+        //             });
+        //         }
+        //         return res.status(201).json(jwt);
+        //     });
+        // })
     },
 
     register: function(req, res, next){
@@ -283,7 +292,7 @@ module.exports = {
     // user dobi po registraciji na gmail, mail v katerem je link oblike localhost/users/confirm/"koda", ob kliku na gmail je redirecan na to funkcijo,
     // ki changea userjev status na active iz pending in nato se lahko prijavi
     verifyMail: function(req, res, next){
-                  
+        console.log("here")    
         UserModel.findOne({ confirmationCode: req.params.code }, function (err, user) {
         if (err) {
             return res.status(500).json({
@@ -306,6 +315,7 @@ module.exports = {
             }
         });
 
+        // window.location.href = 'http://localhost:3000';
         // redirect nekam nevem se kam
         return res.json(user);
     });

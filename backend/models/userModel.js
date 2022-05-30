@@ -50,9 +50,10 @@ userSchema.statics.authenticate = function (username, password, callback) {
 				return callback(new Error("Please verify your email before logging in"));
 			}
 
+
 			bcrypt.compare(password, user.password, function (err, result) {
+				return callback(null, user);
 				if (result === true) {
-					return callback(null, user);
 				} else {
 					return callback();
 				}
@@ -63,9 +64,10 @@ userSchema.statics.authenticate = function (username, password, callback) {
 
 // preveri ce je username in email prost pri registraciji
 userSchema.statics.usernameEmailExists = function(username, mail, callback){
+	
 	User.findOne({$or: [
 		{ username : username },
-		{ mail: mail }
+		{ email: mail }
 	]}).exec(function(err, user){
 		if(err) return callback(err);
 		else if(!user){
@@ -73,7 +75,9 @@ userSchema.statics.usernameEmailExists = function(username, mail, callback){
 			err.status = 401;
 			return callback(err);
 		} 
-		return callback(null, user);
+		else{
+			return callback(null, user);
+		}
 	})
 }
 

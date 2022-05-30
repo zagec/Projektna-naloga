@@ -6,6 +6,8 @@ import Login from './components/Login';
 import Logout from './components/Logout';
 import Home from './components/Home';
 import Registration from './components/Registration';
+import Verify from './components/Verify';
+import RestaurantsNearMe from './components/RestaurantsNearMe';
 import AdminPanel from "./components/AdminPanel";
 import CreateUser from "./components/CreateUser";
 import UpdateUser from "./components/UpdateUser";
@@ -31,10 +33,13 @@ function App() {
             <Route path="/" exact element={<Home />}></Route>
             <Route path="/login" element={<Login />}></Route>
             <Route path="/register" element={<Registration />}></Route>
-            <Route path="/adminpanel" element={<AdminPanel />}></Route>
             <Route path="/logout" element={<Logout />}></Route>
+            <Route path="/verifyUser/:id" element={<Verify />}></Route>
+            <Route path="/findNearMe" element={<RestaurantsNearMe />}></Route>
+            <Route path="/adminpanel" element={<AdminPanel />}></Route>
             <Route path="/createUser" element={<CreateUser />}></Route>
             <Route path="/user/:id" element={<UpdateUser />}></Route>
+
             {/*<Route path="/profile" element={<Profile />}></Route>
             <Route path="/photos/:id" element={<ShowPhoto />}></Route> */}
           </Routes>

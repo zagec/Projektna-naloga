@@ -18,7 +18,7 @@ router.get('/:id', userController.show);
 /*
  * POST
  */
-router.post('/', userController.create);
+router.post('/', userController.register);
 router.post('/login', userController.login)
 
 /*

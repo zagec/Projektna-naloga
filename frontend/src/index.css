@@ -33,57 +33,20 @@ code {
   color:white;
 }
 
-
-.btn {
-
-  border: 1px solid #333;
-  font-family: 'Cinzel', serif;
-  font-size: 20px;
-  cursor: pointer;
-  -webkit-tap-highlight-color: transparent;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  position: relative;
-  z-index: 0;
-  transition: 1s;
+.link-underline {
+  border-bottom-width: 0;
+  background-image: linear-gradient(transparent, transparent), linear-gradient(#fff, #fff);
+  background-size: 0 3px;
+  background-position: 0 100%;
+  background-repeat: no-repeat;
+  transition: background-size .5s ease-in-out;
 }
 
-.btn::before, .btn::after {
-  position: absolute;
-  background: #eee;
-  z-index: -1;
-  transition: 1s;
-  content: '';
+.link-underline-black {
+  background-image: linear-gradient(transparent, transparent), linear-gradient(rgb(51 65 85), rgb(51 65 85))
 }
 
-.btn::before {
-
-}
-
-.btn::after {
- 
-}
-
-.noselect {
-  -webkit-touch-callout: none;
-    -webkit-user-select: none;
-     -khtml-user-select: none;
-       -moz-user-select: none;
-        -ms-user-select: none;
-            user-select: none;
-}
-
-.btn:hover::before {
-  width: 0px;
-  background: #fff;
-}
-
-.btn:hover::after {
-  height: 0px;
-  background: #fff;
-}
-
-.btn:hover {
-  background: #fff;
+.link-underline:hover {
+  background-size: 100% 3px;
+  background-position: 0 100%
 }
