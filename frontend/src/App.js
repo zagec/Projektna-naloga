@@ -7,6 +7,8 @@ import Logout from './components/Logout';
 import Home from './components/Home';
 import Registration from './components/Registration';
 import AdminPanel from "./components/AdminPanel";
+import CreateUser from "./components/CreateUser";
+import UpdateUser from "./components/UpdateUser";
 
 
 function App() {
@@ -31,6 +33,8 @@ function App() {
             <Route path="/register" element={<Registration />}></Route>
             <Route path="/adminpanel" element={<AdminPanel />}></Route>
             <Route path="/logout" element={<Logout />}></Route>
+            <Route path="/createUser" element={<CreateUser />}></Route>
+            <Route path="/user/:id" element={<UpdateUser />}></Route>
             {/*<Route path="/profile" element={<Profile />}></Route>
             <Route path="/photos/:id" element={<ShowPhoto />}></Route> */}
           </Routes>
