@@ -2,7 +2,6 @@ import React, {useState} from "react";
 import {BsFillPersonFill} from "react-icons/bs";
 import {MdEmail} from "react-icons/md";
 import {AiFillLock} from "react-icons/ai";
-import {NavLink} from "react-router-dom";
 
 const CreateUser = ()=>{
     const [username, setUsername] = useState([]);
