@@ -113,11 +113,12 @@ module.exports = {
         desiredRadius = req.params.radius
         latitude = req.params.latitude
         longitude = req.params.longitude
-        console.log(latitude +  ' ' +longitude + ' ' + desiredRadius)
+        console.log(latitude +  ' ' +longitude + ' ' + desiredRadius/3963.2)
 
-            ResturantModel.find( {name: "Big Panda - dostava"})
-            .populate('location_id')
-            .exec(function (err, resturants) {
+            ResturantModel.find({
+                        loc:  { $geoWithin: { $centerSphere: [ [latitude, longitude], desiredRadius/3963.2 ] } }    //The query converts the distance to radians by dividing by the approximate equatorial radius of the earth, 3963.2 miles
+                
+                }).exec(function (err, resturants) {
                 if (err) {
                     return res.status(500).json({
                         message: 'Error when getting resturants.',
@@ -127,28 +128,6 @@ module.exports = {
     
                 return res.json(resturants);
             })
-            // ResturantModel.aggregate([
-            //     { $lookup: {
-            //         from : "location", 
-            //         localField: "location_id", 
-            //         foreignField: "_id", 
-            //         as : "resLocation"
-            //     }},
-            //     {
-            //         $match: { 
-            //             "resLocation.name": "Big Panda - dostava"
-            //             // "resLocation.loc": { $geoWithin: { $centerSphere: [ [latitude, longitude], desiredRadius ] } }
-            //     }}
-            //     ]).exec(function (err, resturants) {
-            //     if (err) {
-            //         return res.status(500).json({
-            //             message: 'Error when getting resturants.',
-            //             error: err
-            //         });
-            //     }
-    
-            //     return res.json(resturants);
-            // })
         
 
         function error(error){

@@ -18,6 +18,14 @@ const Header = () => {
         {context => (
             context.user ? 
               <>
+              {context.user.admin ?
+                  <>
+                    <NavLink className='mr-4 transition ease-in-out   group hover:text-slate-400 duration-300' to="/profile">Admin panel</NavLink>
+                  </>
+                  :
+                  <>
+                  </>
+              }
                 <NavLink className='mr-4 transition ease-in-out   group hover:text-slate-400 duration-300' to="/profile">Profil</NavLink>
                 <NavLink className='mr-4 transition ease-in-out  group hover:text-slate-400 duration-300' to="/logout">Odjavi se</NavLink>
               </>

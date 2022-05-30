@@ -3,13 +3,14 @@ import {useState, useEffect} from 'react'
 const RestaurantsNearMe = () => {
     const [restaurants, setRestaurants] = useState([]);
     const  [myPosition, setMyPosition] = useState([])
+    const  [distance, setDistamce] = useState(0.4)
 
 
     useEffect(function(){
         navigator.geolocation.getCurrentPosition(function(position) {
             setMyPosition([position.coords.latitude,position.coords.longitude]);
             const getRestaurants = async function(){
-                const res = await fetch('http://localhost:3001/restaurants/nearMe/' + position.coords.latitude + '/' +position.coords.longitude + '/10');
+                const res = await fetch('http://localhost:3001/restaurants/nearMe/' + position.coords.latitude + '/' +position.coords.longitude + '/' +distance);
                 const data = await res.json();
                 setRestaurants(data)
                 console.log(data)
@@ -30,7 +31,7 @@ const RestaurantsNearMe = () => {
 
   return (
     <div>
-        sd
+        Najdel {restaurants.length} restavracij v radiusu {parseInt((distance * 1609.344), 10)} metrov
     </div>
   )
 }
