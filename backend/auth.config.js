@@ -5,4 +5,4 @@ module.exports = {
     pass2: "ckhkzclxerkcjyoc",
     databaseUsername: 'vid',
     databasePassword: 'database1234'
-  };
+};
