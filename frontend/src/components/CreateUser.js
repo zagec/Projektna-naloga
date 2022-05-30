@@ -1,4 +1,4 @@
-import React, {useState} from "@types/react";
+import React, {useState} from "react";
 import {BsFillPersonFill} from "react-icons/bs";
 import {MdEmail} from "react-icons/md";
 import {AiFillLock} from "react-icons/ai";
@@ -62,13 +62,9 @@ const CreateUser = ()=>{
                         <label className="error" id="repPswrdErr"></label> <br />
                     </div>
                     <label className='text-sm text-red-700 ml-8 animate-pulse'>{error}</label>
-                    <div className='flex'>
-                        <div className='text-xs ml-4 text-blue-700 hover:cursor-pointer hover:animate-pulse'><NavLink to='/login'>Račun že ustvarjen? Prijavite se!</NavLink></div>
-                    </div>
                 </div>
                 <div className='w-48  ml-auto mr-auto'>
-
-                    <button type="submit" name="send" className="bg-gradient-to-b from-slate-500  to-slate-100 p-2 rounded-b-xl text-base text-center font-semibold w-48 text-slate-800 duration-200">Registriraj se</button>
+                    <button type="submit" name="send" className="bg-gradient-to-b from-slate-500  to-slate-100 p-2 rounded-b-xl text-base text-center font-semibold w-48 text-slate-800 duration-200">Ustvari</button>
                 </div>
             </form>
         </div>
