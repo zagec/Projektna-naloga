@@ -1,4 +1,5 @@
 module.exports = {
+// <<<<<<< HEAD
   secret: "secret-key",
   // <<<<<<< vid_frontend
       user: "beasty.restaurantFinder@gmail.com", 
@@ -11,3 +12,5 @@ module.exports = {
       databaseUsername: 'vid',
       databasePassword: 'database1234'
   };
+// };
+// >>>>>>> 4a4f89a7a08ce3d024e9a25c61d8ffbcd51c34ae

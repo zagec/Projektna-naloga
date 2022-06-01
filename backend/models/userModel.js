@@ -7,6 +7,7 @@ var userSchema = new Schema({
 	'password' : String,
 	'email' : String,
 	'date' : Date,
+	'admin' : Boolean,
 	'restaurantVisits': {
 		type: Array,
 		"default": []
