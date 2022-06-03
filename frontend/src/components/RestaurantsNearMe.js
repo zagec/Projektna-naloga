@@ -3,7 +3,7 @@ import {useState, useEffect} from 'react'
 const RestaurantsNearMe = () => {
     const [restaurants, setRestaurants] = useState([]);
     const  [myPosition, setMyPosition] = useState([])
-    const  [distance, setDistamce] = useState(0.4)
+    const  [distance, setDistamce] = useState(0.2)
 
 
     useEffect(function(){
@@ -20,18 +20,19 @@ const RestaurantsNearMe = () => {
         });
         }, []);
 
-        // console.log(restaurants)
-        // const displayRest = restaurants
-        // .slice(0, 10)
-        // .map((restaurant) => {
-        //    return (
-        //        <div>{restaurant.location_id.name}</div>
-        //    )
-        // })
-
+        const restaurantsDisplay = restaurants.map((restaurant) => {
+            return (<div>{restaurant.ime}</div>)
+        })
   return (
     <div>
-        Najdel {restaurants.length} restavracij v radiusu {parseInt((distance * 1609.344), 10)} metrov
+        <div>
+            Najdel {restaurants.length} restavracij v radiusu {parseInt((distance * 1609.344), 10)} metrov
+        </div>
+
+       <div className='font-bold'>Restavracije</div> 
+        <div>
+            {restaurantsDisplay}
+        </div>
     </div>
   )
 }
