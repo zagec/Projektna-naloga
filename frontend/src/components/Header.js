@@ -7,10 +7,12 @@ import { Icon } from './Icon';
 const Header = () => {
   return (
     <div className="bg-lemon p-3 text-xl flex text-slate-200 font-sans">
-    <div className="ml-8 text-2xl font-bold flex">
+    <NavLink className="hover:cursor-pointer" to="/">
+      <div className="ml-8 text-2xl font-bold flex">
         <Icon />
         Restavrantko
-    </div>
+      </div>
+    </NavLink>
   
     <div className="ml-auto mr-10">
       <NavLink className="mr-4 transition ease-in-out hover:text-slate-400 duration-300" to="/">Domov</NavLink>

@@ -78,6 +78,36 @@ module.exports = {
             return res.json(resturants);
         });
     },
+
+    listByTypePriceDown: function (req, res) {
+        const type = req.params.type
+        ResturantModel.find({ ponudbaPoVrstiHrane: type }).sort({cenaSStudentskimBonom: -1 }).exec(function (err, resturants) {
+
+            if (err) {
+                return res.status(500).json({
+                    message: 'Error when getting resturant.',
+                    error: err
+                });
+            }
+
+            return res.json(resturants);
+        });
+    },
+
+    listByTypePriceUp: function (req, res) {
+        const type = req.params.type
+        ResturantModel.find({ ponudbaPoVrstiHrane: type }).sort({cenaSStudentskimBonom: 1 }).exec(function (err, resturants) {
+
+            if (err) {
+                return res.status(500).json({
+                    message: 'Error when getting resturant.',
+                    error: err
+                });
+            }
+
+            return res.json(resturants);
+        });
+    },
     listByAbecedaUp: function (req, res) {
         ResturantModel.find().sort({ime: 1 }).exec(function (err, resturants) {
 
@@ -93,6 +123,36 @@ module.exports = {
     },
     listByAbecedaDown: function (req, res) {
         ResturantModel.find().sort({ime: -1 }).exec(function (err, resturants) {
+
+            if (err) {
+                return res.status(500).json({
+                    message: 'Error when getting resturant.',
+                    error: err
+                });
+            }
+
+            return res.json(resturants);
+        });
+    },
+
+    listByTypeAbecedaUp: function (req, res) {
+        const type = req.params.type
+        ResturantModel.find({ ponudbaPoVrstiHrane: { '$all': [ [ type, true ] ] } }).sort({ime: 1 }).exec(function (err, resturants) {
+            console.log(resturants.length)
+
+            if (err) {
+                return res.status(500).json({
+                    message: 'Error when getting resturant.',
+                    error: err
+                });
+            }
+
+            return res.json(resturants);
+        });
+    },
+    listByTypeAbecedaDown: function (req, res) {
+        const type = req.params.type
+        ResturantModel.find({ ponudbaPoVrstiHrane: type }).sort({ime: -1 }).exec(function (err, resturants) {
 
             if (err) {
                 return res.status(500).json({
