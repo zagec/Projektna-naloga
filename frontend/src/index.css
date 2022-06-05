@@ -50,3 +50,19 @@ code {
   background-size: 100% 3px;
   background-position: 0 100%
 }
+
+.text-rainbow-animation {
+  font-family:arial black;
+  background-image: 
+    linear-gradient(to right, #DC8239,#e2e8f0); 
+  -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;  
+  animation: rainbow-animation 150s linear infinite;
+}
+
+@keyframes rainbow-animation {
+    to {
+        background-position: 4500vh;
+    }
+}
+

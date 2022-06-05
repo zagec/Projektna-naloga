@@ -51,6 +51,60 @@ module.exports = {
         });
     },
 
+    listByPriceDown: function (req, res) {
+        ResturantModel.find().sort({cenaSStudentskimBonom: -1 }).exec(function (err, resturants) {
+
+            if (err) {
+                return res.status(500).json({
+                    message: 'Error when getting resturant.',
+                    error: err
+                });
+            }
+
+            return res.json(resturants);
+        });
+    },
+
+    listByPriceUp: function (req, res) {
+        ResturantModel.find().sort({cenaSStudentskimBonom: 1 }).exec(function (err, resturants) {
+
+            if (err) {
+                return res.status(500).json({
+                    message: 'Error when getting resturant.',
+                    error: err
+                });
+            }
+
+            return res.json(resturants);
+        });
+    },
+    listByAbecedaUp: function (req, res) {
+        ResturantModel.find().sort({ime: 1 }).exec(function (err, resturants) {
+
+            if (err) {
+                return res.status(500).json({
+                    message: 'Error when getting resturant.',
+                    error: err
+                });
+            }
+
+            return res.json(resturants);
+        });
+    },
+    listByAbecedaDown: function (req, res) {
+        ResturantModel.find().sort({ime: -1 }).exec(function (err, resturants) {
+
+            if (err) {
+                return res.status(500).json({
+                    message: 'Error when getting resturant.',
+                    error: err
+                });
+            }
+
+            return res.json(resturants);
+        });
+    },
+
     showResturantsWithLocations: async function (req, res) {
         let resturants = await ResturantModel.aggregate([
             {
