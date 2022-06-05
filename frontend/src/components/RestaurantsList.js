@@ -4,17 +4,17 @@ import { useState } from 'react'
 import Restaurant from './Restaurant'
 import {BsFillCaretRightFill} from 'react-icons/bs'
 
-const RestaurantsList = ({ restaurants }) => {
+const RestaurantsList = ({ restaurants, resPerPage }) => {
   const [pageNum, setPageNum] = useState(0);
 
-  const restaurantsPerPage = 15;
+  const restaurantsPerPage = resPerPage;
   const restaurantsDisplayed = restaurantsPerPage * pageNum;
 
   const displayRest = restaurants
   .slice(restaurantsDisplayed, restaurantsDisplayed + restaurantsPerPage)
   .map((restaurant) => {
     return (
-      <Restaurant  key={restaurant._id} restaurant={restaurant} />
+      <div key={restaurant._id}  onClick={() => {window.location.href="/restaurant/"+restaurant._id}}><Restaurant restaurant={restaurant}/></div>
       )
   })
 
@@ -29,17 +29,19 @@ const RestaurantsList = ({ restaurants }) => {
       <div>
         {displayRest}
       </div>
+      {(restaurants.length > restaurantsPerPage && 
        <ReactPaginate 
-          previousLabel={'Nazaj'}
-          nextLabel={'Naprej'}
-          pageCount={pageCount}
-          onPageChange={changePage}
-          containerClassName={'paginationBtns flex mt-8 w-1/2 justify-center ml-auto mr-auto'}
-          previousLinkClassName={'p-1.5 rounded-l-xl'}
-          nextLinkClassName={'p-1.5  rounded-r-xl'}
-          disabledClassName={'display-none'}
-          activeClassName={'paginationActive'}
+       previousLabel={'Nazaj'}
+       nextLabel={'Naprej'}
+       pageCount={pageCount}
+       onPageChange={changePage}
+       containerClassName={'paginationBtns flex mt-8 w-1/2 justify-center ml-auto mr-auto'}
+       previousLinkClassName={'p-1.5 rounded-l-xl'}
+       nextLinkClassName={'p-1.5  rounded-r-xl'}
+       disabledClassName={'display-none'}
+       activeClassName={'paginationActive'}
        />
+      )}
     </div>
   )
 }

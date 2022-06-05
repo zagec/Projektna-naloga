@@ -11,6 +11,7 @@ import RestaurantsNearMe from './components/RestaurantsNearMe';
 import AdminPanel from "./components/AdminPanel";
 import CreateUser from "./components/CreateUser";
 import UpdateUser from "./components/UpdateUser";
+import ShowRestaurant from "./components/ShowRestaurant";
 
 
 function App() {
@@ -39,7 +40,8 @@ function App() {
             <Route path="/adminpanel" element={<AdminPanel />}></Route>
             <Route path="/createUser" element={<CreateUser />}></Route>
             <Route path="/user/:id" element={<UpdateUser />}></Route>
-
+            <Route path="/restaurant/:id" element={<ShowRestaurant />}></Route>
+          
             {/*<Route path="/profile" element={<Profile />}></Route>
             <Route path="/photos/:id" element={<ShowPhoto />}></Route> */}
           </Routes>

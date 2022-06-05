@@ -3,7 +3,7 @@ const Restaurant = ({ restaurant }) => {
     const location = (restaurant.lokacija).substring(0, (restaurant.lokacija).indexOf('('));
 
   return (
-    <div className='bg-white text-slate-800 p-6 mb-6 transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-105 group hover:bg-slate-400 duration-300'>
+    <div className='bg-white text-slate-800 p-6 mb-6 transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-105 group hover:bg-slate-400 duration-300 rounded-tl-3xl rounded-br-3xl'>
         <div className='mb-2 font-bold text-lg group-hover:text-white delay-150 duration-300'>
             {restaurant.ime}
         </div>

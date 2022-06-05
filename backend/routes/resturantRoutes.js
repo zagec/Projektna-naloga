@@ -5,7 +5,11 @@ var resturantController = require('../controllers/resturantController.js');
 /*
  * GET
  */
-router.get('/', resturantController.list);
+router.get('/byAbeceda/down', resturantController.listByAbecedaDown);
+router.get('/byAbeceda/up', resturantController.listByAbecedaUp);
+// router.get('/', resturantController.list);
+router.get('/byPrice/down', resturantController.listByPriceDown);
+router.get('/byPrice/up', resturantController.listByPriceUp);
 router.get('/removeAll', resturantController.removeAll);
 router.get('/nearMe/:latitude/:longitude/:radius', resturantController.showResturantsInRadius);
 
