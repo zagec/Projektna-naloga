@@ -16,6 +16,7 @@ router.get('/byPrice/up', resturantController.listByPriceUp);
 router.get('/byPrice/up/:type', resturantController.listByTypePriceUp);
 router.get('/removeAll', resturantController.removeAll);
 router.get('/nearMe/:latitude/:longitude/:radius', resturantController.showResturantsInRadius);
+router.get('/importDataFromJson', resturantController.importJson);
 
 /*
  * GET
