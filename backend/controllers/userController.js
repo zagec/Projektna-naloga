@@ -199,11 +199,20 @@ module.exports = {
                     message: 'No such user'
                 });
             }
-
-            user.username = req.body.username ? req.body.username : user.username;
-			user.password = req.body.password ? req.body.password : user.password;
-			user.email = req.body.email ? req.body.email : user.email;
-			user.date = req.body.date ? req.body.date : user.date;
+            if(req.body.email !== "" && req.body.email !== undefined){
+                user.email = req.body.email
+            }
+            if(req.body.username !== "" && req.body.username !== undefined){
+                user.username = req.body.username
+            }
+            if(req.body.admin !== "" && req.body.admin !== undefined){
+                user.admin = req.body.admin
+            }
+            //user.username = req.body.username ? req.body.username : user.username;
+			//user.password = req.body.password ? req.body.password : user.password;
+			//user.email = req.body.email ? req.body.email : user.email;
+			//user.date = req.body.date ? req.body.date : user.date;
+            //user.admin = req.body.admin ? req.body.admin : user.admin;
 			
             user.save(function (err, user) {
                 if (err) {
