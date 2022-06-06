@@ -32,12 +32,27 @@ const Registration = () => {
             })
         });
         const data = await res.json();
+        console.log(data)
         if(data._id !== undefined){
             window.location.href="/login";
         }
         else{
             if(data.message === "User was registered successfully! Please check your email"){
                 setSuccessfullyRegistered(true);
+            }
+            else if(data.message === "Password does not match"){
+                setUsername("");
+                setPassword("");
+                setRepPassword("");
+                setEmail("");
+                setError("Gesli se ne ujemata :(");
+            }
+            else if(data.message === "Username with this mail already registered"){
+                setUsername("");
+                setPassword("");
+                setRepPassword("");
+                setEmail("");
+                setError("Uporabniško ime ali e-pošta že zasedena :(");
             }
             else{
                 setUsername("");
