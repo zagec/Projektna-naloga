@@ -24,8 +24,8 @@ const SideNav = ({ onChange}) => {
                 </div>
             </div>
             <div className='text-base mt-4 px-4'>
-                <div class="link link-underline link-underline-black mb-3"><NavLink className="hover:cursor-pointer" to="/findNearMe">Najdi restavracije v bližini</NavLink></div>
-                <div class="link link-underline link-underline-black w-32 mb-3" onClick={handleChange}>Išči po vrsti hrane</div>
+                <div className="link link-underline link-underline-black mb-3"><NavLink className="hover:cursor-pointer" to="/findNearMe">Najdi restavracije v bližini</NavLink></div>
+                <div className="link link-underline link-underline-black w-32 mb-3" onClick={handleChange}>Išči po vrsti hrane</div>
             </div>
         </div> : 
             <div onMouseOver={() => setOpen(true)} className='mt-2 flex'>

@@ -6,7 +6,7 @@ var restaurantRatingController = require('../controllers/restaurantRatingControl
  * GET
  */
 router.get('/', restaurantRatingController.list);
-router.get('/fromRestaurant/:id', restaurantRatingController.getRestaurantsRatings);
+router.get('/:id', restaurantRatingController.getRestaurantsRatings);
 
 /*
  * GET

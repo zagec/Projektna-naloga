@@ -1,11 +1,13 @@
 import {useState, useEffect } from 'react'
 import React from 'react'
 import Dropdown from './Dropdown'
+import Boop from './Boop'
 import RestaurantsList from './RestaurantsList'
 import {AiOutlineArrowUp} from 'react-icons/ai' 
 import {AiOutlineArrowDown} from 'react-icons/ai' 
+import {FaWindowClose} from 'react-icons/fa' 
 
-const RestaurantMenu = ({ searchByType }) => {
+const RestaurantMenu = ({ searchByType, setSearchByType }) => {
     const [restaurants, setRestaurants] = useState([]);
     const [tag, setTag ] = useState('');
     const [searchActive, setSearchActive ] = useState(false);
@@ -38,6 +40,7 @@ const RestaurantMenu = ({ searchByType }) => {
         getRestaurants();
     }
 
+ 
     function typeSearch(value) { 
         setSearchByThisType(value)
         const search = (value == 'abeceda') ? "byAbeceda" : "byPrice"
@@ -79,10 +82,18 @@ const RestaurantMenu = ({ searchByType }) => {
                 <Dropdown setSearchBy={setResPerPage} onChange={(e) => setResPerPage(e)} values={[15, 5, 10, 20, 30]}/>
             </div>
         </div> : 
-        <div className='grid grid-cols-5 gap-4 ml-20'>
-            {data}
-        </div>}
+        <div>
+            <div className='flex'>
+                <p  className='mb-2 font-semibold text-slate-800'>Izberi vrsto hrane:</p>
+                <p className='ml-auto mr-2'><Boop children={<FaWindowClose className="text-red-600" size={20} onClick={() => setSearchByType(false)}/>} /></p>
+                </div>
+            <div className='grid grid-cols-5 gap-4 ml-20'>
+                {data}
+            </div>
+        </div>
+        }
         <div className=''>
+        {searchByType && <div className='flex mt-6 bg-slate-500 rounded-full p-2 w-1/2 text-center font-semibold text-slate-200 pl-5'>Restavracije, ki nudijo hrano "<p className='font-semibold'>{searchByThisType}</p>"</div>}
             <div className=' p-6'>
                 {restaurants.length === 0 ? 
                     <p className='text-2xl ml-auto text-center mr-auto'>{tag === '' ? "Restavracije trenutno niso na voljo" : "Ni restavracij/e pod iskalnim nizom \"" + tag + "\""} {sad}</p>
@@ -90,6 +101,7 @@ const RestaurantMenu = ({ searchByType }) => {
                     <RestaurantsList restaurants={restaurants}  resPerPage={resPerPage} />
                 }
             </div>
+ 
         </div>
     </div>
   )

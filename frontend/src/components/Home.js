@@ -10,7 +10,7 @@ const Home = () => {
   return (
     <div className='flex'>
         <SideNav2  onChange={(e) => setSearchByType(e)}/>
-        <RestaurantMenu searchByType={searchByType} />
+        <RestaurantMenu searchByType={searchByType} setSearchByType={setSearchByType}/>
     </div>
   )
 }

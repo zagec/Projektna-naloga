@@ -1,6 +1,9 @@
 var ResturantModel = require('../models/resturantModel.js');
 var restaurantRatingController = require('../controllers/restaurantRatingController.js');
 const fetch = require("node-fetch");
+var assert = require('assert')
+const fs = require('fs');
+
 /**
  * resturantController.js
  *
@@ -380,5 +383,27 @@ module.exports = {
             return res.status(204).json();
         });
     },
+
+    importJson: function(req,res){
+        data = req.params.file
+        // console.log(__dirname);
+        ResturantModel.remove({}).exec(function (err, resturant) {
+            if (err) {
+                return res.status(500).json({
+                    message: 'Error when deleting the resturant.',
+                    error: err
+                });
+            }
+
+            var data1 = JSON.parse(fs.readFileSync(data));
+            console.log(data1.length)
+            ResturantModel.insertMany(data1, function(err,r) {
+                       assert.equal(null, err);
+                 
+                       return res.status(204).json();
+                 })
+        });
+        
+    }
 
 };

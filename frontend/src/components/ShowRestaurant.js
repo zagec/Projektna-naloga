@@ -1,8 +1,11 @@
 import React, {useEffect, useState} from 'react'
+import Ratings from './Ratings'
 import Map from './Map'
 
 const ShowRestaurant = () => {
     const [restaurant, setRestaurant] = useState(null)
+    const [showWhat, setShowWhat] = useState('meni')
+
     useEffect(function(){
         var url = window.location.href;
         var arr = url.split('/');
@@ -17,8 +20,9 @@ const ShowRestaurant = () => {
 
     const meni = (restaurant) && restaurant.meni.map((food) => {
         return <div key={food} className='bg-slate-300 mt-2 text-sm p-3'>
-                    <p className='font-medium'>{food[0]}</p>
+                    <p className='font-medium text-base'>{food[0]}</p>
                     <div className='ml-4 mt-2'>
+                        <p className='text-base font-medium'>Zraven dobite še:</p>
                         {food[1][0] != "" && <div>-{food[1][0]}</div>}
                         {food[1][1] != "" && <div>-{food[1][1]}</div>}
                         {food[1][2] != "" && <div>-{food[1][2]}</div>}
@@ -70,8 +74,19 @@ const ShowRestaurant = () => {
             </div>
         </div>
         <div className='mr-2 mt-4 pt-12'>
-            <p className='text-2xl font-semibold text-lemon w-24 text-center rounded-3xl'>Meni:</p>
-            <div className='mr-4'>{meni}</div>
+            <div className='flex'>
+                <p className={showWhat == 'meni' ? 'text-2xl font-semibold text-lemon w-24 text-center rounded-3xl border-slate-600 border-4 p-3 mr-6' : 'text-2xl font-semibold text-lemon w-24 text-center p-3 mr-6 link link-underline link-underline-black'}  onClick={() => setShowWhat('meni')}>Meni:</p>
+                <p className={showWhat == 'mnenja' ? 'text-2xl font-semibold text-lemon w-28 text-center  p-3 border-slate-600 border-4 rounded-3xl' : 'text-2xl font-semibold text-lemon w-32 text-center rounded-3xl link link-underline link-underline-black p-3'} onClick={() => setShowWhat('mnenja')}>Mnenja:</p>
+            </div>
+            <div>
+                {showWhat == 'meni' 
+                ?
+                    <div className='mr-4'>{meni}</div>
+                :
+                    <div><Ratings /></div>
+                }
+            </div>
+            
         </div>
     </div>
   ) : <></>

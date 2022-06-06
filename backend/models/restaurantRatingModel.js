@@ -2,6 +2,10 @@ var mongoose = require('mongoose');
 var Schema   = mongoose.Schema;
 
 var restaurantRatingSchema = new Schema({
+	// rating: rating,
+    //             date: new Date(),
+    //             user: userContext.user._id,
+    //             photo: restId
 	'starRating' :{
 		type: Number,
 		min: 0,
@@ -15,7 +19,8 @@ var restaurantRatingSchema = new Schema({
 	'restaurant_tk' : {
 	 	type: Schema.Types.ObjectId,
 	 	ref: 'resturant'
-	}
+	}, 
+	'date': Date
 });
 
 module.exports = mongoose.model('restaurantRating', restaurantRatingSchema);
