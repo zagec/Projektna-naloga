@@ -3,10 +3,17 @@ import { useState } from 'react'
 import {NavLink} from 'react-router-dom'
 import { AiOutlineRight } from 'react-icons/ai'
 
-const SideNav = () => {
+const SideNav = ({ onChange}) => {
     const [open, setOpen] = useState(false);
+    const [searchByType, setSearchByType] = useState(false);
     const showMenu = '';
     const hideMenu = 'invisible';
+
+    const handleChange = (event) => {
+        setSearchByType(true);
+        onChange(true)
+    };
+
   return (
     <div className='w-56'>
         { open ? 
@@ -17,8 +24,8 @@ const SideNav = () => {
                 </div>
             </div>
             <div className='text-base mt-4 px-4'>
-                <div class="link link-underline link-underline-black mb-3"><NavLink className="hover:cursor-pointer" to="/findNearMe">Najdi restavracije v bližini</NavLink></div>
-                <div class="link link-underline link-underline-black w-16 mb-3"><NavLink className="hover:cursor-pointer" to="/">Drugo</NavLink></div>
+                <div className="link link-underline link-underline-black mb-3"><NavLink className="hover:cursor-pointer" to="/findNearMe">Najdi restavracije v bližini</NavLink></div>
+                <div className="link link-underline link-underline-black w-32 mb-3" onClick={handleChange}>Išči po vrsti hrane</div>
             </div>
         </div> : 
             <div onMouseOver={() => setOpen(true)} className='mt-2 flex'>

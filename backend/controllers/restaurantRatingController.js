@@ -66,7 +66,24 @@ module.exports = {
                 });
             }
 
-            return res.status(201).json(restaurantRating);
+            RestaurantratingModel.findOne({_id: restaurantRating._id}).populate('user_tk').exec(function (err, restaurantRating) {
+                if (err) {
+                    return res.status(500).json({
+                        message: 'Error when getting restaurantRating.',
+                        error: err
+                    });
+                }
+    
+                if (!restaurantRating) {
+                    return res.status(404).json({
+                        message: 'No such restaurantRating'
+                    });
+                }
+    
+                return res.json(restaurantRating);
+            })
+
+            // return res.status(201).json(restaurantRating);
         });
     },
 
@@ -129,7 +146,7 @@ module.exports = {
     getRestaurantsRatings: function(req, res){
         restId = req.params.id
         
-        RestaurantratingModel.find({ 'restaurant_tk' : restId }).exec(function (err, restaurantRatings) {
+        RestaurantratingModel.find({ 'restaurant_tk' : restId }).populate('user_tk').exec(function (err, restaurantRatings) {
             if (err) {
                 return res.status(500).json({
                     message: 'Error when getting restaurantRating with id ' + restId,

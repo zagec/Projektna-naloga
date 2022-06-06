@@ -1,6 +1,9 @@
 var ResturantModel = require('../models/resturantModel.js');
 var restaurantRatingController = require('../controllers/restaurantRatingController.js');
 const fetch = require("node-fetch");
+var assert = require('assert')
+const fs = require('fs');
+
 /**
  * resturantController.js
  *
@@ -78,6 +81,36 @@ module.exports = {
             return res.json(resturants);
         });
     },
+
+    listByTypePriceDown: function (req, res) {
+        const type = req.params.type
+        ResturantModel.find({ ponudbaPoVrstiHrane: type }).sort({cenaSStudentskimBonom: -1 }).exec(function (err, resturants) {
+
+            if (err) {
+                return res.status(500).json({
+                    message: 'Error when getting resturant.',
+                    error: err
+                });
+            }
+
+            return res.json(resturants);
+        });
+    },
+
+    listByTypePriceUp: function (req, res) {
+        const type = req.params.type
+        ResturantModel.find({ ponudbaPoVrstiHrane: type }).sort({cenaSStudentskimBonom: 1 }).exec(function (err, resturants) {
+
+            if (err) {
+                return res.status(500).json({
+                    message: 'Error when getting resturant.',
+                    error: err
+                });
+            }
+
+            return res.json(resturants);
+        });
+    },
     listByAbecedaUp: function (req, res) {
         ResturantModel.find().sort({ime: 1 }).exec(function (err, resturants) {
 
@@ -93,6 +126,36 @@ module.exports = {
     },
     listByAbecedaDown: function (req, res) {
         ResturantModel.find().sort({ime: -1 }).exec(function (err, resturants) {
+
+            if (err) {
+                return res.status(500).json({
+                    message: 'Error when getting resturant.',
+                    error: err
+                });
+            }
+
+            return res.json(resturants);
+        });
+    },
+
+    listByTypeAbecedaUp: function (req, res) {
+        const type = req.params.type
+        ResturantModel.find({ ponudbaPoVrstiHrane: { '$all': [ [ type, true ] ] } }).sort({ime: 1 }).exec(function (err, resturants) {
+            console.log(resturants.length)
+
+            if (err) {
+                return res.status(500).json({
+                    message: 'Error when getting resturant.',
+                    error: err
+                });
+            }
+
+            return res.json(resturants);
+        });
+    },
+    listByTypeAbecedaDown: function (req, res) {
+        const type = req.params.type
+        ResturantModel.find({ ponudbaPoVrstiHrane: type }).sort({ime: -1 }).exec(function (err, resturants) {
 
             if (err) {
                 return res.status(500).json({
@@ -320,5 +383,27 @@ module.exports = {
             return res.status(204).json();
         });
     },
+
+    importJson: function(req,res){
+        data = req.params.file
+        // console.log(__dirname);
+        ResturantModel.remove({}).exec(function (err, resturant) {
+            if (err) {
+                return res.status(500).json({
+                    message: 'Error when deleting the resturant.',
+                    error: err
+                });
+            }
+
+            var data1 = JSON.parse(fs.readFileSync(data));
+            console.log(data1.length)
+            ResturantModel.insertMany(data1, function(err,r) {
+                       assert.equal(null, err);
+                 
+                       return res.status(204).json();
+                 })
+        });
+        
+    }
 
 };

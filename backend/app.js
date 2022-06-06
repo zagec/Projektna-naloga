@@ -106,7 +106,7 @@ app.use('/food', foodRouter);
 app.use('/journey', journeyRouter);
 app.use('/jwt', jwtRouter);
 app.use('/location', locationRouter);
-app.use('/restaurantRating', restaurantRatingRouter);
+app.use('/ratings', restaurantRatingRouter);
 app.use('/restaurantMenu', restaurantMenuRouter);
 app.use('/restaurants', restaurantsRouter);
 
