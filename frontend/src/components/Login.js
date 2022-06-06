@@ -28,7 +28,7 @@ const Login = () => {
         console.log(data)
         if(data._id !== undefined){
             userContext.setUserContext(data);
-            // window.location.href="/";
+            window.location.href="/";
         }
         else if(data.message === "Username does not exist"){
             setUsername("");

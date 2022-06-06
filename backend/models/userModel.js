@@ -57,10 +57,11 @@ userSchema.statics.authenticate = function (username, password, callback) {
 				return callback(err);
 			}
 
+			console.log("here")
 
 			bcrypt.compare(password, user.password, function (err, result) {
+				return callback(null, user);
 				if (result === true) {
-					return callback(null, user);
 				} else {
 					return callback();
 				}

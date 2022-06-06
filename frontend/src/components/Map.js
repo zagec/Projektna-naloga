@@ -73,10 +73,18 @@ const Map = ({ restaurants, position, width, height, oneMarker}) => {
         };
 
         return (
-        <GoogleMap mapContainerStyle={containerStyle} center={center} defaultZoom={12} onLoad={onLoad} onUnmount={onUnmount} clickableIcons={false}>
+        <GoogleMap mapContainerStyle={containerStyle} center={center} defaultZoom={13} zoom={14} onLoad={onLoad} onUnmount={onUnmount} clickableIcons={false}>
           <MarkerClusterer>
             {(clusterer) =>
-               !oneMarker ? restaurants.map((restaurant) => (
+               !oneMarker ? 
+               <div>
+                  <Marker 
+                    key={position[0] + position[1]} 
+                    icon={'http://maps.google.com/mapfiles/kml/paddle/blu-blank.png'}
+                    position={{lat: position[0], lng: position[1]}} 
+                    cursor={"pointer"} 
+                    clusterer={clusterer}/>
+               {restaurants.map((restaurant) => (
                 // clusterer={clusterer}
                 <Marker 
                     key={restaurant.loc[0] + restaurant.ime} 
@@ -84,7 +92,8 @@ const Map = ({ restaurants, position, width, height, oneMarker}) => {
                     cursor={"pointer"} 
                     onClick={() => {setSelectedRestaurant(restaurant)}}
                     clusterer={clusterer}/>
-              )) :
+              )) }
+              </div> :
               <Marker 
               key={restaurants.loc[0] + restaurants.ime} 
               position={{lat: restaurants.loc[0], lng: restaurants.loc[1]}} 

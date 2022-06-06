@@ -82,15 +82,25 @@ const Ratings = () => {
             )}    
         </UserContext.Consumer>
         <div>
-        {ratings.map((rating) => (
-            <div className=' mb-4 p-2' key={rating._id}>
-            <div className='text-sm text-blue-700 flex border-2 border-slate-400 p-4 w-3/4'>
-                {rating.user_tk.username}
-                <p className='ml-4 text-lg text-black flex'>{showStars(rating.starRating)}</p>
-                <p className='ml-auto mr-2 '>{getPrettyDate(rating.date)}</p>
-            </div>
-            </div>
-        ))}
+            {ratings.length != 0 
+            ?
+                <>
+                    {ratings.map((rating) => (
+                        <div className=' mb-4 p-2' key={rating._id}>
+                        <div className='text-sm text-blue-700 flex border-2 border-slate-400 p-4 w-3/4'>
+                        {rating.user_tk.username}
+                        <p className='ml-4 text-lg text-black flex'>{showStars(rating.starRating)}</p>
+                        <p className='ml-auto mr-2 '>{getPrettyDate(rating.date)}</p>
+                        </div>
+                        </div>
+                    ))}
+                </>
+            :
+             <div className='mt-4 ml-4'>
+                 Restavracija še ni dobila ocen
+             </div>
+            } 
+
         </div>
     </div>
   )
