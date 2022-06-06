@@ -25,10 +25,27 @@ const Login = () => {
             })
         });
         const data = await res.json();
+        console.log(data)
         if(data._id !== undefined){
             userContext.setUserContext(data);
-            window.location.href="/";
-        } else {
+            // window.location.href="/";
+        }
+        else if(data.message === "Username does not exist"){
+            setUsername("");
+            setPassword("");
+            setError("Uporbniško ime ne obstaja");
+        } 
+        else if(data.message === "Incorrect password"){
+            setUsername("");
+            setPassword("");
+            setError("Napačno geslo");
+        } 
+        else if(data.message === "Please verify your email before logging in"){
+            setUsername("");
+            setPassword("");
+            setError("Račun še ni bil potrjen, potrdi ga z linkom poslanim na vašo e-pošto");
+        } 
+        else {
             setUsername("");
             setPassword("");
             setError("Neuspešna prijava :(");

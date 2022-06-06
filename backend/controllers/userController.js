@@ -25,9 +25,9 @@ function sendConfirmationEmail(name, email, confirmationCode){
         from: config.user,
         to: email,
         subject: "Potrdi svoj gmail naslov",
-        html: `<h1>Gmail racun</h1>
+        html: `<h1>Beasty - restaurant finder</h1>
             <h2>Zdravo ${name}</h2>
-            <p>Za potrdilo stisni na spodnji link</p>
+            <p>Stisni na spodnji link, da potrdiš svoj račun</p>
             <a href=http://localhost:3000/verifyUser/${confirmationCode}> Stisni me</a>
             </div>`,
     }).catch(err => console.log(err));
@@ -127,9 +127,22 @@ module.exports = {
     login: function (req,res,next) {
         UserModel.authenticate(req.body.username, req.body.password, function(err, user){
             if(err || !user){
-                var err = new Error('Wrong username or paassword');
-                err.status = 401;
-                return next(err);
+                if(err == undefined){
+                    return res.status(500).json({
+                        message: 'Incorrect password',
+                        error: err
+                    });
+                }
+                else if(err.message == "Please verify your email before logging in"){
+                    return res.status(500).json({
+                        message: 'Please verify your email before logging in',
+                        error: err
+                    });
+                }
+                return res.status(500).json({
+                    message: 'Incorrect password',
+                    error: err
+                });
             }
             req.session.userId = user._id;
             //res.redirect('/users/profile');
@@ -169,13 +182,15 @@ module.exports = {
                 error: err
             });
         }
-        UserModel.usernameEmailExists(req.body.username, req.body.mail, function(error, user){
+        UserModel.usernameEmailExists(req.body.username, req.body.email, function(error, user){
             if(error || !user){
                 module.exports.create(req, res);
             } else {
-                var err = new Error("Username or mail taken");
-                err.status = 401;
-                return next(err);
+                var err =  new Error("Username with this mail already registered");
+                return res.status(500).json({
+                    message: 'Username with this mail already registered',
+                    error: err
+                });
             }
         })
     },

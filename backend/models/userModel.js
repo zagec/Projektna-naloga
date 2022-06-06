@@ -38,22 +38,29 @@ userSchema.statics.authenticate = function (username, password, callback) {
 	User.findOne({username: username})
 		.exec(function (err, user) {
 			if (err) {
+				var err = new Error("User not found.");
+				err.status = 401;
+				err.message = "error";
 				return callback(err);
 			} else if (!user) {
 				var err = new Error("User not found.");
 				err.status = 401;
+				err.message = "User not found";
 				return callback(err);
 			}
 
 			// ce user ni active, torej je pending vrne error ker se mora verifyjat mail
 			if (user.status != "Active") {
-				return callback(new Error("Please verify your email before logging in"));
+				var err = new Error("User not found.");
+				err.status = 401;
+				err.message = "Please verify your email before logging in";
+				return callback(err);
 			}
 
 
 			bcrypt.compare(password, user.password, function (err, result) {
-				return callback(null, user);
 				if (result === true) {
+					return callback(null, user);
 				} else {
 					return callback();
 				}
@@ -64,7 +71,7 @@ userSchema.statics.authenticate = function (username, password, callback) {
 
 // preveri ce je username in email prost pri registraciji
 userSchema.statics.usernameEmailExists = function(username, mail, callback){
-	
+	console.log(username, mail)
 	User.findOne({$or: [
 		{ username : username },
 		{ email: mail }
