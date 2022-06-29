@@ -15,13 +15,13 @@ const RestaurantsNearMe = () => {
 
   useEffect(function(){
       navigator.geolocation.getCurrentPosition(function(position) {
-          // setMyPosition([position.coords.latitude,position.coords.longitude]);
-          setMyPosition([46.549567,15.649397]);
+          setMyPosition([position.coords.latitude,position.coords.longitude]);
+          // setMyPosition([46.549567,15.649397]);
           const search = distanceMeters /  1609.344
           const getRestaurants = async function(){
             // 46.549567, 15.649397
-              // const res = await fetch('http://localhost:3001/restaurants/nearMe/' + position.coords.latitude + '/' +position.coords.longitude + '/' +search);
-              const res = await fetch('http://localhost:3001/restaurants/nearMe/' + 46.549567 + '/' +15.649397 + '/' +search);
+              const res = await fetch('http://localhost:3001/restaurants/nearMe/' + position.coords.latitude + '/' +position.coords.longitude + '/' +search);
+              // const res = await fetch('http://localhost:3001/restaurants/nearMe/' + 46.549567 + '/' +15.649397 + '/' +search);
               const data = await res.json();
               setRestaurants(data)
           }
