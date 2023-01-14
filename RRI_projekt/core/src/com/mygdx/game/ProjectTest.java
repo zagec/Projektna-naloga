@@ -26,11 +26,15 @@ import com.mygdx.game.utils.MapRasterTiles;
 import com.mygdx.game.utils.PixelPosition;
 import com.mygdx.game.utils.ZoomXY;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.net.URL;
 
 public class ProjectTest extends ApplicationAdapter implements GestureDetector.GestureListener {
 
     private ShapeRenderer shapeRenderer;
+    public static SpriteBatch batch;
+
     private Vector3 touchPosition;
 
     private TiledMap tiledMap;
@@ -38,6 +42,7 @@ public class ProjectTest extends ApplicationAdapter implements GestureDetector.G
     private OrthographicCamera camera;
 
     private Texture[] mapTiles;
+    private Texture markerTexture;
     private ZoomXY beginTile;   // top left tile
 
     private final int NUM_TILES = 3;
@@ -50,6 +55,7 @@ public class ProjectTest extends ApplicationAdapter implements GestureDetector.G
     @Override
     public void create() {
         shapeRenderer = new ShapeRenderer();
+        batch = new SpriteBatch();
 
         camera = new OrthographicCamera();
         camera.setToOrtho(false, WIDTH, HEIGHT);
@@ -65,12 +71,12 @@ public class ProjectTest extends ApplicationAdapter implements GestureDetector.G
         try {
             //in most cases, geolocation won't be in the center of the tile because tile borders are predetermined (geolocation can be at the corner of a tile)
             ZoomXY centerTile = MapRasterTiles.getTileNumber(CENTER_GEOLOCATION.lat, CENTER_GEOLOCATION.lng, ZOOM);
-            ZoomXY centerTile2 = MapRasterTiles.getTileNumber(MARKER_GEOLOCATION.lat, MARKER_GEOLOCATION.lng, ZOOM);
             mapTiles = MapRasterTiles.getRasterTileZone(centerTile, NUM_TILES);
-            mapTiles = MapRasterTiles.getRasterTileZone(centerTile2, NUM_TILES);
             //you need the beginning tile (tile on the top left corner) to convert geolocation to a location in pixels.
             beginTile = new ZoomXY(ZOOM, centerTile.x - ((NUM_TILES - 1) / 2), centerTile.y - ((NUM_TILES - 1) / 2));
-//            beginTile2 = new ZoomXY(ZOOM, centerTile2.x - ((NUM_TILES - 1) / 2), centerTile2.y - ((NUM_TILES - 1) / 2));
+
+            markerTexture = MapRasterTiles.getTextureMarker();
+
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -108,18 +114,32 @@ public class ProjectTest extends ApplicationAdapter implements GestureDetector.G
     }
 
     private void drawMarkers() {
+        PixelPosition[] markerArr = new PixelPosition[2];
         PixelPosition marker = MapRasterTiles.getPixelPosition(MARKER_GEOLOCATION.lat, MARKER_GEOLOCATION.lng, MapRasterTiles.TILE_SIZE, ZOOM, beginTile.x, beginTile.y, HEIGHT);
+        PixelPosition marker2 = MapRasterTiles.getPixelPosition(CENTER_GEOLOCATION.lat, CENTER_GEOLOCATION.lng, MapRasterTiles.TILE_SIZE, ZOOM, beginTile.x, beginTile.y, HEIGHT);
 
-        shapeRenderer.setProjectionMatrix(camera.combined);
-        shapeRenderer.setColor(Color.RED);
-        shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
-        shapeRenderer.circle(marker.x, marker.y, 10);
-        shapeRenderer.end();
+
+        markerArr[0] = marker;
+        markerArr[1] = marker2;
+
+//        shapeRenderer.setProjectionMatrix(camera.combined);
+        batch.setProjectionMatrix(camera.combined);
+        batch.begin();
+
+//        shapeRenderer.setColor(Color.ORANGE);
+//        shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
+        for(int i = 0; i<markerArr.length; i++){
+            batch.draw(markerTexture, markerArr[i].x, markerArr[i].y);
+//            shapeRenderer.circle(markerArr[i].x, markerArr[i].y, 10);
+        }
+        batch.end();
+//        shapeRenderer.end();
     }
 
     @Override
     public void dispose() {
         shapeRenderer.dispose();
+        batch.dispose();
     }
 
     @Override
@@ -201,5 +221,7 @@ public class ProjectTest extends ApplicationAdapter implements GestureDetector.G
 
         camera.position.x = MathUtils.clamp(camera.position.x, effectiveViewportWidth / 2f, WIDTH - effectiveViewportWidth / 2f);
         camera.position.y = MathUtils.clamp(camera.position.y, effectiveViewportHeight / 2f, HEIGHT - effectiveViewportHeight / 2f);
+//        camera.position.x = effectiveViewportWidth;
+//        camera.position.y = effectiveViewportHeight;
     }
 }

@@ -20,7 +20,8 @@ public class MapRasterTiles {
     //https://www.geoapify.com/get-started-with-maps-api
     static String mapServiceUrl = "https://maps.geoapify.com/v1/tile/";
     static String token = "?&apiKey=613fe956ba024c21b30688b0b22219ee";
-    static String tilesetId = "dark-matter-purple-roads";
+//    static String tilesetId = "dark-matter-purple-roads";
+    static String tilesetId = "osm-bright";
     static String format = "@2x.png";
 
     //@2x in format means it returns higher DPI version of the image and the image size is 512px (otherwise it is 256px)
@@ -63,6 +64,12 @@ public class MapRasterTiles {
      */
     public static Texture getRasterTile(ZoomXY zoomXY) throws IOException {
         URL url = new URL(mapServiceUrl + tilesetId + "/" + zoomXY.toString() + format + token);
+        ByteArrayOutputStream bis = fetchTile(url);
+        return getTexture(bis.toByteArray());
+    }
+
+    public static Texture getTextureMarker() throws IOException {
+        URL url = new URL("https://api.geoapify.com/v1/icon/?type=material&color=%23ff9700&icon=restaurant&apiKey=613fe956ba024c21b30688b0b22219ee");
         ByteArrayOutputStream bis = fetchTile(url);
         return getTexture(bis.toByteArray());
     }
