@@ -1,0 +1,12 @@
+sourceCompatibility = 1.7
+[compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
+
+sourceSets.main.java.srcDirs = [ "src/" ]
+
+eclipse.project.name = appName + "-core"
+
+dependencies {
+    implementation 'com.google.code.gson:gson:2.10'
+    implementation 'com.github.filosganga:geogson-core:1.2.21'
+    implementation 'org.wololo:jts2geojson:0.18.1'
+}
