@@ -73,6 +73,30 @@
                 android:textColor="@color/orange"
                 android:textSize="11sp" />
 
+            <TextView
+                android:id="@+id/dateTimeVal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toEndOf="@id/dataTime"
+                android:text="@string/dataTimeValue"
+                android:layout_marginTop="5dp"
+                android:textSize="11sp"
+                android:textColor="@color/orange"
+                android:layout_marginStart="5dp"
+                android:layout_below="@+id/location" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toEndOf="@id/dateTimeVal"
+                android:text="@string/mins"
+                android:layout_marginTop="5dp"
+                android:textSize="11sp"
+                android:textColor="@color/orange"
+                android:layout_marginStart="5dp"
+                android:layout_below="@+id/location" />
+
+
 
         </RelativeLayout>
     </RelativeLayout>

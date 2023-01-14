@@ -2,7 +2,9 @@
     <string name="app_name">Restaurantko Data Getter</string>
     <string name="data">Possible data to get</string>
     <string name="dataName">data title</string>
-    <string name="dataTime">every 0 mins</string>
+    <string name="dataTime">Every</string>
     <string name="location">location</string>
     <string name="dataInfo">Getting Type of data</string>
+    <string name="dataTimeValue">0</string>
+    <string name="mins">minutes</string>
 </resources>

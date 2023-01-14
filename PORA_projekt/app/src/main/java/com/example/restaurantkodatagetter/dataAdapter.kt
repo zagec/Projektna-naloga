@@ -13,7 +13,7 @@ class dataAdapter(private var data: MutableList<Data>, var monNodeListener: onNo
 
     class ViewHolder(itemView: View, onNodeL: onNodeListener): RecyclerView.ViewHolder(itemView), View.OnClickListener, View.OnLongClickListener {
         var name: TextView = itemView.findViewById(R.id.dataName)
-        var time: TextView = itemView.findViewById(R.id.dataTime)
+        var time: TextView = itemView.findViewById(R.id.dateTimeVal)
         var infoD: TextView = itemView.findViewById(R.id.dataInfo)
         var location: TextView = itemView.findViewById(R.id.location)
         var btn: SwitchCompat = itemView.findViewById(R.id.btn)
@@ -42,11 +42,13 @@ class dataAdapter(private var data: MutableList<Data>, var monNodeListener: onNo
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder.name.text = data[position].name
-        holder.time.text = data[position].time
+        holder.time.text = data[position].time.toString()
         holder.infoD.text = data[position].info
         holder.location.text = data[position].location
 
+        holder.btn.isChecked = data[position].enabled
         holder.btn.setOnClickListener{
+            data[position].enabled = !data[position].enabled
             clickListener(position)
         }
     }

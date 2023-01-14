@@ -27,15 +27,26 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/view" />
 
-    <View
-        android:layout_width="0dp"
-        android:layout_height="100dp"
+<!--    <View-->
+<!--        android:layout_width="0dp"-->
+<!--        android:layout_height="100dp"-->
+<!--        android:layout_marginTop="10dp"-->
+<!--        android:background="@drawable/rounded_corners_frame"-->
+<!--        app:layout_constraintEnd_toEndOf="parent"-->
+<!--        app:layout_constraintStart_toStartOf="parent"-->
+<!--        app:layout_constraintTop_toBottomOf="@+id/view"-->
+<!--        app:layout_constraintWidth_percent="0.9" />-->
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/dataRV"
+        android:layout_width="match_parent"
+        android:layout_height="600dp"
+        android:layout_above="@+id/view"
         android:layout_marginTop="10dp"
-        android:background="@drawable/rounded_corners_frame"
+        android:scrollbars="vertical"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/view"
-        app:layout_constraintWidth_percent="0.9" />
+        app:layout_constraintTop_toBottomOf="@+id/view" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
