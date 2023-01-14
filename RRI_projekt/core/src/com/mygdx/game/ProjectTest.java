@@ -1,12 +1,15 @@
 package com.mygdx.game;
 
+import static com.mongodb.MongoClientSettings.getDefaultCodecRegistry;
+import static com.mongodb.client.model.Filters.eq;
+import static org.bson.codecs.configuration.CodecRegistries.fromProviders;
+import static org.bson.codecs.configuration.CodecRegistries.fromRegistries;
+
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
@@ -21,14 +24,19 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.ScreenUtils;
+import com.mongodb.client.MongoCollection;
 import com.mygdx.game.utils.Geolocation;
 import com.mygdx.game.utils.MapRasterTiles;
 import com.mygdx.game.utils.PixelPosition;
 import com.mygdx.game.utils.ZoomXY;
+import com.mygdx.game.utils.db.ConnectToDB;
+import com.mygdx.game.utils.db.Restaurant;
 
-import java.io.ByteArrayOutputStream;
+import org.bson.codecs.configuration.CodecProvider;
+import org.bson.codecs.configuration.CodecRegistry;
+import org.bson.codecs.pojo.PojoCodecProvider;
+
 import java.io.IOException;
-import java.net.URL;
 
 public class ProjectTest extends ApplicationAdapter implements GestureDetector.GestureListener {
 
@@ -51,9 +59,22 @@ public class ProjectTest extends ApplicationAdapter implements GestureDetector.G
     private final Geolocation MARKER_GEOLOCATION = new Geolocation(46.559070, 15.638100);
     private final int WIDTH = MapRasterTiles.TILE_SIZE * NUM_TILES;
     private final int HEIGHT = MapRasterTiles.TILE_SIZE * NUM_TILES;
+    //databse connection
+    private final ConnectToDB db =  new ConnectToDB();
 
     @Override
     public void create() {
+        CodecProvider pojoCodecProvider = PojoCodecProvider.builder().automatic(true).build();
+        CodecRegistry pojoCodecRegistry = fromRegistries(getDefaultCodecRegistry(), fromProviders(pojoCodecProvider));
+
+        MongoCollection<Restaurant> collection = db.database.getCollection("resturants", Restaurant.class).withCodecRegistry(pojoCodecRegistry); // vse restavracije
+        Restaurant doc = collection.find(eq("ime", "Big Panda restavracija")).first();// posamezna restavracija
+        if (doc != null) {
+            System.out.println(doc.getLoc());
+        } else {
+            System.out.println("No matching documents found.");
+        }
+
         shapeRenderer = new ShapeRenderer();
         batch = new SpriteBatch();
 
