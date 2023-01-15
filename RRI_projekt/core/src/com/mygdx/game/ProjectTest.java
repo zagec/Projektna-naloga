@@ -55,12 +55,12 @@ public class ProjectTest extends ApplicationAdapter implements GestureDetector.G
     private Texture markerTexture;
     private ZoomXY beginTile;   // top left tile
 
-    private final int NUM_TILES = 3;
+    private final int NUM_TILES = 6;
     private final int ZOOM = 15;
     private final Geolocation CENTER_GEOLOCATION = new Geolocation(46.557314, 15.637771);
     private final int WIDTH = MapRasterTiles.TILE_SIZE * NUM_TILES;
     private final int HEIGHT = MapRasterTiles.TILE_SIZE * NUM_TILES;
-    //databse connection
+    //database connection
     CodecProvider pojoCodecProvider = PojoCodecProvider.builder().automatic(true).build();
     CodecRegistry pojoCodecRegistry = fromRegistries(getDefaultCodecRegistry(), fromProviders(pojoCodecProvider));
     private final ConnectToDB db =  new ConnectToDB();
@@ -144,6 +144,7 @@ public class ProjectTest extends ApplicationAdapter implements GestureDetector.G
 //        shapeRenderer.end();
     }
     private void setMarkers(){
+        //was trying to pull wrong data from mongodb
         FindIterable<Restaurant> docs = collection.find();// seznam restavracij
         for(Restaurant doc : docs){
             Geolocation MARKER_GEOLOCATION = new Geolocation(doc.getLoc().get(0), doc.getLoc().get(1));
