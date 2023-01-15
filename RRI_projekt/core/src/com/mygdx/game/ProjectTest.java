@@ -8,8 +8,11 @@ import static org.bson.codecs.configuration.CodecRegistries.fromRegistries;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
@@ -23,6 +26,7 @@ import com.badlogic.gdx.maps.tiled.tiles.StaticTiledMapTile;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.physics.bullet.collision._btMprSupport_t;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.mongodb.client.FindIterable;
@@ -39,11 +43,18 @@ import org.bson.codecs.configuration.CodecRegistry;
 import org.bson.codecs.pojo.PojoCodecProvider;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
+import jdk.internal.net.http.common.Pair;
 
 public class ProjectTest extends ApplicationAdapter implements GestureDetector.GestureListener {
 
     private ShapeRenderer shapeRenderer;
     public static SpriteBatch batch;
+
+    public BitmapFont font;
+
 
     private Vector3 touchPosition;
 
@@ -55,22 +66,42 @@ public class ProjectTest extends ApplicationAdapter implements GestureDetector.G
     private Texture markerTexture;
     private ZoomXY beginTile;   // top left tile
 
-    private final int NUM_TILES = 6;
+    private final int NUM_TILES = 3;
     private final int ZOOM = 15;
     private final Geolocation CENTER_GEOLOCATION = new Geolocation(46.557314, 15.637771);
     private final int WIDTH = MapRasterTiles.TILE_SIZE * NUM_TILES;
     private final int HEIGHT = MapRasterTiles.TILE_SIZE * NUM_TILES;
-    //database connection
+    //databse connection
     CodecProvider pojoCodecProvider = PojoCodecProvider.builder().automatic(true).build();
     CodecRegistry pojoCodecRegistry = fromRegistries(getDefaultCodecRegistry(), fromProviders(pojoCodecProvider));
     private final ConnectToDB db =  new ConnectToDB();
     private final MongoCollection<Restaurant> collection = db.database.getCollection("resturants", Restaurant.class).withCodecRegistry(pojoCodecRegistry);;
     Array<PixelPosition> markerArr = new Array<>();
+    Array<Restaurant>  restaurants = new Array<>();
+
+    public static GlyphLayout layout = new GlyphLayout();
+    Texture restInfo;
+    boolean showRestaurantInfo = false;
+    PixelPosition positionOfDisplay = new PixelPosition(0,0);
+    String restaurantDisplayName = "null";
+    String restaurantDisplayStreet = "null";
 
     @Override
     public void create() {
+//        Restaurant doc = collection.find(eq("ime", "Big Panda restavracija")).first();// posamezna restavracija
+//        if (doc != null) {
+//            System.out.println(doc.getLoc());
+//        } else {
+//            System.out.println("No matching documents found.");
+//        }
+
+        restInfo = new Texture("gray_background.jpg");
         shapeRenderer = new ShapeRenderer();
         batch = new SpriteBatch();
+
+        font = new BitmapFont();
+        font.getData().setScale(1.5f);
+        font.setColor(Color.BLACK);
 
         camera = new OrthographicCamera();
         camera.setToOrtho(false, WIDTH, HEIGHT);
@@ -129,24 +160,36 @@ public class ProjectTest extends ApplicationAdapter implements GestureDetector.G
     }
 
     private void drawMarkers() {
-
-//        shapeRenderer.setProjectionMatrix(camera.combined);
         batch.setProjectionMatrix(camera.combined);
         batch.begin();
 
-//        shapeRenderer.setColor(Color.ORANGE);
-//        shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
+
         for(PixelPosition marker : markerArr){
             batch.draw(markerTexture, marker.x, marker.y);
-//            shapeRenderer.circle(markerArr[i].x, markerArr[i].y, 10);
+        }
+
+        if(showRestaurantInfo){
+            layout.setText(font, restaurantDisplayName);
+            float widthName = layout.width;
+            float heightName = layout.height;
+
+            layout.setText(font, restaurantDisplayStreet);
+            float widthStreet = layout.width;
+            float heightStreet = layout.height;
+
+            float width = Math.max(widthName, widthStreet);
+            float height = heightName + heightStreet;
+
+            batch.draw(restInfo, positionOfDisplay.x + 10, positionOfDisplay.y, width + 20, height + 30);
+            font.draw(batch, restaurantDisplayName, positionOfDisplay.x + 20, positionOfDisplay.y + 2*heightName + 20);
+            font.draw(batch, restaurantDisplayStreet, positionOfDisplay.x + 20, positionOfDisplay.y + heightStreet + 10);
         }
         batch.end();
-//        shapeRenderer.end();
     }
     private void setMarkers(){
-        //was trying to pull wrong data from mongodb
         FindIterable<Restaurant> docs = collection.find();// seznam restavracij
         for(Restaurant doc : docs){
+            restaurants.add(doc);
             Geolocation MARKER_GEOLOCATION = new Geolocation(doc.getLoc().get(0), doc.getLoc().get(1));
             PixelPosition marker = MapRasterTiles.getPixelPosition(MARKER_GEOLOCATION.lat, MARKER_GEOLOCATION.lng, MapRasterTiles.TILE_SIZE, ZOOM, beginTile.x, beginTile.y, HEIGHT);
             markerArr.add(marker);
@@ -166,15 +209,51 @@ public class ProjectTest extends ApplicationAdapter implements GestureDetector.G
         return false;
     }
 
+    public Restaurant isOnMarker(int x, int y){
+        for(int i = 0; i < markerArr.size; i++){
+            if(x > (markerArr.get(i).x - 20) && x< (markerArr.get(i).x - 20) + markerTexture.getWidth() &&
+                    y > markerArr.get(i).y && y< markerArr.get(i).y + markerTexture.getHeight() ){
+                return restaurants.get(i);
+            }
+        }
+        List<Double> l = new ArrayList<>();
+        return new Restaurant("null", false, "null", l);
+    }
+
     @Override
     public boolean tap(float x, float y, int count, int button) {
         float procX = x/900;
-        float procy = y/900;
-        procy = 1 - procy;
-        float woroldX = procX * WIDTH - 15;
-        float woroldY = procy * HEIGHT;
-        PixelPosition marker = new PixelPosition((int)woroldX,(int)woroldY);
-        markerArr.add(marker);
+        float procY = y/900;
+        procY = 1 - procY;
+        float worldX = procX * WIDTH - 15;
+        float worldY = procY * HEIGHT;
+        PixelPosition marker = new PixelPosition((int)worldX,(int)worldY);
+
+        Restaurant rest = isOnMarker((int)worldX, (int)worldY);
+        if(rest.getIme().equals("null")){
+            showRestaurantInfo = false;
+            markerArr.add(marker);
+            List<Double> l = new ArrayList<>();
+            restaurants.add(new Restaurant("null", false, "null", l));
+        }
+        else{
+            showRestaurantInfo = true;
+            restaurantDisplayName = rest.getIme();
+            restaurantDisplayName = restaurantDisplayName.replaceAll("š","s");
+            restaurantDisplayName = restaurantDisplayName.replaceAll("č","c");
+            restaurantDisplayName = restaurantDisplayName.replaceAll("ž","z");
+
+            restaurantDisplayStreet = rest.getLokacija();
+            restaurantDisplayStreet = restaurantDisplayStreet.replaceAll("š","s");
+            restaurantDisplayStreet = restaurantDisplayStreet.replaceAll("č","c");
+            restaurantDisplayStreet = restaurantDisplayStreet.replaceAll("ž","z");
+            positionOfDisplay = marker;
+            batch.setProjectionMatrix(camera.combined);
+            batch.begin();
+            font.draw(batch, rest.getIme(), worldX + 20, worldY + 10);
+            batch.end();
+        }
+
         return true;
     }
 
