@@ -24,6 +24,7 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.ScreenUtils;
+import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
 import com.mygdx.game.utils.Geolocation;
 import com.mygdx.game.utils.MapRasterTiles;
@@ -135,6 +136,66 @@ public class ProjectTest extends ApplicationAdapter implements GestureDetector.G
     }
 
     private void drawMarkers() {
+        CodecProvider pojoCodecProvider = PojoCodecProvider.builder().automatic(true).build();
+        CodecRegistry pojoCodecRegistry = fromRegistries(getDefaultCodecRegistry(), fromProviders(pojoCodecProvider));
+
+//        MongoCollection<Restaurant> collection = db.database.getCollection("resturants", Restaurant.class).withCodecRegistry(pojoCodecRegistry);
+        MongoCollection<Restaurant> collection = db.database.getCollection("loc", Restaurant.class).withCodecRegistry(pojoCodecRegistry);
+
+        FindIterable<Restaurant> locationDocs = collection.find();
+
+        double[] lat = new double[(int) collection.countDocuments()];
+        double[] lon = new double[(int) collection.countDocuments()];
+        int l = 0;
+        String[] locations = new String[(int) collection.countDocuments()];
+
+        for(Restaurant loc : locationDocs){
+            lat[l] = loc.getLoc().get(0);
+            lon[l] = loc.getLoc().get(1);
+            l++;
+        }
+
+        int location = lat.length + lon.length;
+        double[] combinedArray = new double[location];
+        System.arraycopy(lat, 0, combinedArray, 0, lat.length);
+        System.arraycopy(lon, 0, combinedArray, lat.length, lon.length);
+
+
+        for(int j = 0; j<combinedArray.length;j++){
+//            batch.draw(markerTexture, locations[i].x, locations[i].y);
+        }
+
+        Geolocation[] geolocations = new Geolocation[(int) collection.countDocuments()];
+
+
+//        List<String> locations = new ArrayList<>();
+//        MongoCursor<Restaurant> cursor = locationDocs.iterator();
+//        int index = 0;
+//        while (cursor.hasNext()) {
+//            Restaurant locationDoc = cursor.next();
+//            String location = locationDoc.getLokacija();
+//            locations[index++] = location;
+//        }
+
+
+
+//        FindIterable<Restaurant> location = collection.find();
+//        for(Restaurant loc : location){
+//            double latitude, longitude = loc.getLoc();
+//            locations.add(new Restaurant(latitude,longitude));
+//        }
+
+//        int lenght = geolocations.length;
+//        PixelPosition[] markerArray = new PixelPosition[lenght];
+//        for(int m = 0; m < lenght; m++){
+//            markerArray[m] = MapRasterTiles.getPixelPosition(Geolocation[1], Geolocation[0],MapRasterTiles.TILE_SIZE, ZOOM, beginTile.x, beginTile.y, HEIGHT );
+//            }
+
+        PixelPosition[] markerArr = new PixelPosition[geolocations.length];
+        for(int n = 0; n< geolocations.length; n++){
+            markerArr[n] = new PixelPosition();
+        }
+
         PixelPosition[] markerArr = new PixelPosition[2];
         PixelPosition marker = MapRasterTiles.getPixelPosition(MARKER_GEOLOCATION.lat, MARKER_GEOLOCATION.lng, MapRasterTiles.TILE_SIZE, ZOOM, beginTile.x, beginTile.y, HEIGHT);
         PixelPosition marker2 = MapRasterTiles.getPixelPosition(CENTER_GEOLOCATION.lat, CENTER_GEOLOCATION.lng, MapRasterTiles.TILE_SIZE, ZOOM, beginTile.x, beginTile.y, HEIGHT);
