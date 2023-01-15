@@ -1,10 +1,31 @@
 package com.example.restaurantkodatagetter
 
+<<<<<<< Updated upstream
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+=======
+import android.annotation.SuppressLint
+import android.content.Context
+import android.content.SharedPreferences
+import android.hardware.Sensor
+import android.hardware.SensorEvent
+import android.hardware.SensorEventListener
+import android.hardware.SensorManager
+import android.os.Build
+import androidx.appcompat.app.AppCompatActivity
+import android.os.Bundle
+import android.widget.TextView
+import android.widget.Toast
+import androidx.annotation.RequiresApi
+>>>>>>> Stashed changes
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.restaurantkodatagetter.databinding.ActivityMainBinding
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
+
+lateinit var sharedPref: SharedPreferences
+const val MY_SP_FILE_NAME = "myshared.data"
 
 class MainActivity : AppCompatActivity(), dataAdapter.onNodeListener {
     lateinit var binding: ActivityMainBinding
@@ -15,8 +36,45 @@ class MainActivity : AppCompatActivity(), dataAdapter.onNodeListener {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        var dataPeople = getAllFromPeople()
+
         //dodaj svojo data thingy (time je v min pomojem najboljse)
+<<<<<<< Updated upstream
         dataArr.add(Data("Number of People in restaurant", "Gets number of people from an image", 30, "Location of the restaurant", true))
+=======
+        dataArr.add(
+            Data(
+                "Number of People in restaurant",
+                "Gets number of people from an image",
+                30,
+                "Location of the restaurant",
+                true
+            )
+        )
+        dataArr.add(Data(
+            "Number of Cars on the roads to the restaurant",
+            "Get number of cars from an image",
+            25,
+            "Owners location",
+            true
+        ))
+
+        //steps
+        dataArr.add(Data(
+            "Number of steps",
+            "Counts your steps",
+            2,
+            "Your location",
+            true))
+
+
+        binding.btnPeople.setOnClickListener{
+            val db = DatabaseHelper(this, null)
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                db.addPeopleNumToDB(2, "test", getDateNow())
+            }
+        }
+>>>>>>> Stashed changes
 
         val dataArrClickListener = { position: Int ->
             println(dataArr[position].enabled)
@@ -25,6 +83,76 @@ class MainActivity : AppCompatActivity(), dataAdapter.onNodeListener {
         val adapterConcertView = dataAdapter(dataArr,this, dataArrClickListener)
         rvConcerts.adapter = adapterConcertView
         rvConcerts.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
+<<<<<<< Updated upstream
+=======
+        //steps
+        sensorManager = getSystemService(Context.SENSOR_SERVICE) as SensorManager
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    fun getDateNow() : String{
+        val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")
+        return LocalDateTime.now().format(formatter)
+    }
+
+
+    @SuppressLint("Range")
+    fun getAllFromPeople() {
+        val db = DatabaseHelper(this, null)
+        val cursor = db.getAllFromPeopleNum()
+
+        if (cursor!!.moveToFirst()) {
+            var nekaj = mutableListOf(cursor.getString(cursor.getColumnIndex(DatabaseHelper.NUM_COL)), cursor.getString(cursor.getColumnIndex(DatabaseHelper.LOCATION_COL)), cursor.getString(cursor.getColumnIndex(DatabaseHelper.TIME_COL)))
+            println(nekaj[0] + " " + nekaj[1] + " " + nekaj[2])
+            while(cursor.moveToNext()){
+                var nekaj = mutableListOf(cursor.getString(cursor.getColumnIndex(DatabaseHelper.NUM_COL)), cursor.getString(cursor.getColumnIndex(DatabaseHelper.LOCATION_COL)), cursor.getString(cursor.getColumnIndex(DatabaseHelper.TIME_COL)))
+                println(nekaj[0] + " " + nekaj[1] + " " + nekaj[2])            }
+        }
+        cursor.close()
+    }
+
+    //steps
+    override fun onResume() {
+        super.onResume()
+        running = true
+        // This sensor requires permission android.permission.ACTIVITY_RECOGNITION. in AndroidManifest.xml
+        val stepSensor = sensorManager?.getDefaultSensor(Sensor.TYPE_STEP_COUNTER)
+        if (stepSensor != null) {
+            sensorManager?.registerListener(this, stepSensor, SensorManager.SENSOR_DELAY_UI)
+        } else {
+            Toast.makeText(this, "No sensor detected on this device", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    //steps
+    override fun onSensorChanged(event: SensorEvent?) {
+
+        // klicemo textview v recyclerju ce bi hotel displajat stevilo korakov
+        //var tv_stepsTaken = findViewById<TextView>(R.id.tv_stepsTaken)
+
+        if (running) {
+            totalSteps = event!!.values[0]
+            val currentSteps =
+                totalSteps.toInt() - previousTotalSteps.toInt() //vzamemo stevilo vseh stepou in jim odstejemo trenutne
+            // za prikaz stepov?
+            //tv_stepsTaken.text = ("$currentSteps")
+        }
+    }
+
+    // steps
+    //reset steps on a set timer
+    fun resetSteps() {
+        //only need this if steps are displayed
+        //var tv_stepsTaken = findViewById<TextView>(R.id.tv_stepsTaken)
+        previousTotalSteps = totalSteps
+        // the steps will be reset to 0
+        //tv_stepsTaken.text = 0.toString()
+        // Send data to db
+        //saveData()
+    }
+
+    override fun onAccuracyChanged(p0: Sensor?, p1: Int) {
+>>>>>>> Stashed changes
     }
 
     override fun onNoteClick(position2: Int) {
