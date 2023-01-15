@@ -42,8 +42,6 @@ class MainActivity : AppCompatActivity(), dataAdapter.onNodeListener, SensorEven
     private lateinit var locationManager: LocationManager
     private val locationPermissionCode = 2
 
-
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         app = application as MyApplication
@@ -84,12 +82,20 @@ class MainActivity : AppCompatActivity(), dataAdapter.onNodeListener, SensorEven
 
 
         binding.btnPeople.setOnClickListener{
-            val db = DatabaseHelper(this, null)
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                db.addPeopleNumToDB(2, "test", getDateNow())
-            }
+            timerFunForPeople(db)
         }
 
+<<<<<<< Updated upstream
+=======
+        binding.btnCars.setOnClickListener{
+            timerFunForCars(db)
+        }
+
+        binding.btnSteps.setOnClickListener{
+            timerStepCounter(db)
+        }
+
+>>>>>>> Stashed changes
         val dataArrClickListener = { position: Int ->
             println(dataArr[position].enabled)
         }
@@ -101,7 +107,6 @@ class MainActivity : AppCompatActivity(), dataAdapter.onNodeListener, SensorEven
         sensorManager = getSystemService(Context.SENSOR_SERVICE) as SensorManager
 
         stepSensor = sensorManager?.getDefaultSensor(Sensor.TYPE_STEP_COUNTER)
-
 
         val timer = Timer()
         //600000
@@ -129,8 +134,46 @@ class MainActivity : AppCompatActivity(), dataAdapter.onNodeListener, SensorEven
                 }
             }
         }
+<<<<<<< Updated upstream
 
 
+=======
+    }
+
+    fun timerFunForCars(db: DatabaseHelper): TimerTask{
+        val handler = Handler()
+
+        return object : TimerTask() {
+            @RequiresApi(Build.VERSION_CODES.O)
+            override fun run() {
+                if(dataArr[1].enabled){
+                    handler.post(Runnable {
+                        try {
+                            var number = (0..10).random()
+                            db.addCarNumToDB(number, "test", getDateNow())
+                        } catch (e: Exception) {
+                        }
+                    })
+                }
+            }
+        }
+
+    }
+
+    fun timerStepCounter(db: DatabaseHelper): TimerTask{
+        val mainExecutor = ContextCompat.getMainExecutor(this)
+        return object : TimerTask() {
+            @RequiresApi(Build.VERSION_CODES.O)
+            override fun run() {
+                if(dataArr[2].enabled){
+                    mainExecutor.execute{
+                        val number = (0..10).random()
+                        db.addStepCountToDb(number, app.getID().toString(), "test",getDateNow())
+                    }
+                }
+            }
+        }
+>>>>>>> Stashed changes
     }
 
     @RequiresApi(Build.VERSION_CODES.O)

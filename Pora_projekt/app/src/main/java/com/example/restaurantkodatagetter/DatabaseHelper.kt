@@ -85,6 +85,8 @@ class DatabaseHelper(context: Context, factory: SQLiteDatabase.CursorFactory?) :
         val db = this.writableDatabase
 
         db.insert(STEPS, null, values)
+        println("ADDED TO STEPS NUM TABLE, VALUES: userid: " + userId + ", count: " + count + ", location: " + location + ", time: "  + date)
+
         db.close()
     }
     fun clearStepsCountTable() {

@@ -8,4 +8,9 @@
     <string name="dataTimeValue" translatable="false">0</string>
     <string name="sendTestDataPeople" translatable="false">Send people num test</string>
     <string name="mins">minutes</string>
+<<<<<<< Updated upstream
+=======
+    <string name="sendTestDataCars" translatable="false">Send cars num test</string>
+    <string name="sendTestDataSteps" translatable="false">Send steps num test</string>
+>>>>>>> Stashed changes
 </resources>
