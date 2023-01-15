@@ -19,8 +19,6 @@ import com.example.restaurantkodatagetter.databinding.ActivityMainBinding
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
-lateinit var sharedPref: SharedPreferences
-const val MY_SP_FILE_NAME = "myshared.data"
 
 class MainActivity : AppCompatActivity(), dataAdapter.onNodeListener, SensorEventListener {
     lateinit var binding: ActivityMainBinding
