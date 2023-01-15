@@ -80,14 +80,14 @@ class MainActivity : AppCompatActivity(), dataAdapter.onNodeListener, SensorEven
     override fun onSensorChanged(event: SensorEvent?) {
 
         // klicemo textview v recyclerju ce bi hotel displajat stevilo korakov
-        var tv_stepsTaken = findViewById<TextView>(R.id.tv_stepsTaken)
+        //var tv_stepsTaken = findViewById<TextView>(R.id.tv_stepsTaken)
 
         if (running) {
             totalSteps = event!!.values[0]
             val currentSteps =
                 totalSteps.toInt() - previousTotalSteps.toInt() //vzamemo stevilo vseh stepou in jim odstejemo trenutne
             // za prikaz stepov?
-            tv_stepsTaken.text = ("$currentSteps")
+            //tv_stepsTaken.text = ("$currentSteps")
         }
     }
 
@@ -95,12 +95,12 @@ class MainActivity : AppCompatActivity(), dataAdapter.onNodeListener, SensorEven
     //reset steps on a set timer
     fun resetSteps() {
         //only need this if steps are displayed
-        var tv_stepsTaken = findViewById<TextView>(R.id.tv_stepsTaken)
+        //var tv_stepsTaken = findViewById<TextView>(R.id.tv_stepsTaken)
         previousTotalSteps = totalSteps
         // the steps will be reset to 0
-        tv_stepsTaken.text = 0.toString()
+        //tv_stepsTaken.text = 0.toString()
         // Send data to db
-        saveData()
+        //saveData()
     }
 
     override fun onAccuracyChanged(p0: Sensor?, p1: Int) {
