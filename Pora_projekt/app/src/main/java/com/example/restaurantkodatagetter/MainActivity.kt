@@ -30,7 +30,9 @@ class MainActivity : AppCompatActivity(), dataAdapter.onNodeListener, SensorEven
     private var sensorManager: SensorManager? = null
     private var running = false
     private var totalSteps = 0f
+    private var currentSteps = 0f
     private var previousTotalSteps = 0f
+    private var stepSensor: Sensor? = null;
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -80,12 +82,14 @@ class MainActivity : AppCompatActivity(), dataAdapter.onNodeListener, SensorEven
         val dataArrClickListener = { position: Int ->
             println(dataArr[position].enabled)
         }
-        val rvConcerts = binding.dataRV //as RecyclerView
+        val rvConcerts = binding.dataRV
         val adapterConcertView = dataAdapter(dataArr, this, dataArrClickListener)
         rvConcerts.adapter = adapterConcertView
         rvConcerts.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
         //steps
         sensorManager = getSystemService(Context.SENSOR_SERVICE) as SensorManager
+        stepSensor = sensorManager?.getDefaultSensor(Sensor.TYPE_STEP_COUNTER)
+
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
@@ -124,13 +128,14 @@ class MainActivity : AppCompatActivity(), dataAdapter.onNodeListener, SensorEven
         }
         curs.close()
     }
+    fun stopListening() {
+        running = false
+        sensorManager?.unregisterListener(this) //always unregister
+    }
 
-    //steps
-    override fun onResume() {
-        super.onResume()
+    fun startListening() {
         running = true
-        // This sensor requires permission android.permission.ACTIVITY_RECOGNITION. in AndroidManifest.xml
-        val stepSensor = sensorManager?.getDefaultSensor(Sensor.TYPE_STEP_COUNTER)
+        //sensorManager.registerListener(this, sensor, SensorManager.SENSOR_DELAY_NORMAL)
         if (stepSensor != null) {
             sensorManager?.registerListener(this, stepSensor, SensorManager.SENSOR_DELAY_UI)
         } else {
@@ -139,34 +144,42 @@ class MainActivity : AppCompatActivity(), dataAdapter.onNodeListener, SensorEven
     }
 
     //steps
+    override fun onResume() {
+        super.onResume()
+        startListening()
+    }
+
+    //steps
+    override fun onPause() {
+        super.onPause()
+        stopListening()
+    }
+
+    //steps
     override fun onSensorChanged(event: SensorEvent?) {
-
-        // klicemo textview v recyclerju ce bi hotel displajat stevilo korakov
-        //var tv_stepsTaken = findViewById<TextView>(R.id.tv_stepsTaken)
-
         if (running) {
             totalSteps = event!!.values[0]
-            val currentSteps =
-                totalSteps.toInt() - previousTotalSteps.toInt() //vzamemo stevilo vseh stepou in jim odstejemo trenutne
-            // za prikaz stepov?
-            //tv_stepsTaken.text = ("$currentSteps")
+            currentSteps = totalSteps - previousTotalSteps //vzamemo stevilo vseh stepou in jim odstejemo prejsnje total stepse
         }
     }
 
     // steps
-    //reset steps on a set timer
     fun resetSteps() {
-        //only need this if steps are displayed
-        //var tv_stepsTaken = findViewById<TextView>(R.id.tv_stepsTaken)
         previousTotalSteps = totalSteps
-        // the steps will be reset to 0
-        //tv_stepsTaken.text = 0.toString()
-        // Send data to db
-        //saveData()
+        currentSteps = 0f;
     }
+    // after sets are reset save them to db
+    // Send data to db
+    //saveData()
 
     override fun onAccuracyChanged(p0: Sensor?, p1: Int) {
     }
+
+    override fun onStop() {
+        super.onStop()
+        stopListening()
+    }
+
 
     override fun onNoteClick(position2: Int) {
         println("click")
