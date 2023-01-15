@@ -2,7 +2,6 @@ package com.example.restaurantkodatagetter
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.content.SharedPreferences
 import android.hardware.Sensor
 import android.hardware.SensorEvent
 import android.hardware.SensorEventListener
@@ -10,11 +9,9 @@ import android.hardware.SensorManager
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.widget.TextView
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.example.restaurantkodatagetter.databinding.ActivityMainBinding
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
@@ -23,6 +20,7 @@ import java.time.format.DateTimeFormatter
 class MainActivity : AppCompatActivity(), dataAdapter.onNodeListener, SensorEventListener {
     lateinit var binding: ActivityMainBinding
     var dataArr: MutableList<Data> = mutableListOf()
+    lateinit var app: MyApplication
 
     //steps
     private var sensorManager: SensorManager? = null
@@ -35,6 +33,7 @@ class MainActivity : AppCompatActivity(), dataAdapter.onNodeListener, SensorEven
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        app = application as MyApplication
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
