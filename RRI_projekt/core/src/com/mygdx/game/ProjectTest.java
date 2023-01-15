@@ -69,13 +69,6 @@ public class ProjectTest extends ApplicationAdapter implements GestureDetector.G
 
     @Override
     public void create() {
-//        Restaurant doc = collection.find(eq("ime", "Big Panda restavracija")).first();// posamezna restavracija
-//        if (doc != null) {
-//            System.out.println(doc.getLoc());
-//        } else {
-//            System.out.println("No matching documents found.");
-//        }
-
         shapeRenderer = new ShapeRenderer();
         batch = new SpriteBatch();
 
@@ -174,16 +167,31 @@ public class ProjectTest extends ApplicationAdapter implements GestureDetector.G
 
     @Override
     public boolean tap(float x, float y, int count, int button) {
-        PixelPosition marker = new PixelPosition((int)x,(int)y);
+        float procX = x/900;
+        float procy = y/900;
+        procy = 1 - procy;
+        float woroldX = procX * WIDTH - 15;
+        float woroldY = procy * HEIGHT;
+        PixelPosition marker = new PixelPosition((int)woroldX,(int)woroldY);
         markerArr.add(marker);
-        System.out.println("x is: "+ x + " y is: " + y);
-        System.out.println("marker is: "+ marker.x + " marker y is: " + marker.y);
-        return false;
+        return true;
     }
 
     @Override
     public boolean longPress(float x, float y) {
-        return false;
+        float procX = x/900;
+        float procy = y/900;
+        procy = 1 - procy;
+        float woroldX = procX * WIDTH - 15;
+        float woroldY = procy * HEIGHT;
+        for(PixelPosition marker :markerArr){
+            if(woroldY < markerTexture.getHeight() + marker.y  && woroldY > marker.y){
+                if (woroldX < markerTexture.getWidth() + marker.x &&  woroldX > marker.x){
+                    markerArr.removeValue(marker,false);
+                }
+            }
+        }
+        return true;
     }
 
     @Override
