@@ -1,9 +1,11 @@
 <resources>
+    <string name="app_name" translatable="false">Restevrantko Data Getter</string>
     <string name="data">Possible data to get</string>
     <string name="dataName" translatable="false">data title</string>
     <string name="dataTime">Every</string>
     <string name="location">location</string>
     <string name="dataInfo">Getting Type of data</string>
     <string name="dataTimeValue" translatable="false">0</string>
+    <string name="sendTestDataPeople" translatable="false">Send people num test</string>
     <string name="mins">minutes</string>
 </resources>
