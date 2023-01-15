@@ -7,7 +7,7 @@ public class Restaurant {
     String lokacija;
     List<Double> loc;
 
-    public Restaurant(){}
+    public Restaurant(String name, List<Double> loc, String street){}
     public Restaurant(String ime, Boolean isBlooming, String lokacija, List<Double> loc) {
         this.ime = ime;
         this.lokacija = lokacija;
