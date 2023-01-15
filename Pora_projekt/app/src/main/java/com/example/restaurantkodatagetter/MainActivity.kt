@@ -106,6 +106,7 @@ class MainActivity : AppCompatActivity(), dataAdapter.onNodeListener, SensorEven
         val timer = Timer()
         //600000
         timer.schedule(timerFunForPeople(db), 0, (dataArr[0].time * 60000).toLong()) //execute in every 30 min
+        timer.schedule(timerStepCounter(db), 0,(dataArr[2].time * 60000).toLong())
     }
 
     private fun getLocation() {
@@ -131,6 +132,21 @@ class MainActivity : AppCompatActivity(), dataAdapter.onNodeListener, SensorEven
         }
 
 
+    }
+
+    fun timerStepCounter(db: DatabaseHelper): TimerTask{
+        val mainExecutor = ContextCompat.getMainExecutor(this)
+        return object : TimerTask() {
+            @RequiresApi(Build.VERSION_CODES.O)
+            override fun run() {
+                if(dataArr[2].enabled){
+                    mainExecutor.execute{
+                        val number = (0..10).random()
+                        db.addStepCountToDb(number, app.getID().toString(), "test",getDateNow())
+                    }
+                }
+            }
+        }
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
@@ -209,9 +225,6 @@ class MainActivity : AppCompatActivity(), dataAdapter.onNodeListener, SensorEven
         previousTotalSteps = totalSteps
         currentSteps = 0f;
     }
-    // after sets are reset save them to db
-    // Send data to db
-    //saveData()
 
     override fun onAccuracyChanged(p0: Sensor?, p1: Int) {
     }
