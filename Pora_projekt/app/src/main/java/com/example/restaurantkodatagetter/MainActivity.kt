@@ -39,6 +39,7 @@ class MainActivity : AppCompatActivity(), dataAdapter.onNodeListener, SensorEven
         setContentView(binding.root)
 
         var dataPeople = getAllFromPeople()
+        var dataCars = getAllFromCars()
 
         //dodaj svojo data thingy (time je v min pomojem najboljse)
         dataArr.add(
@@ -107,6 +108,21 @@ class MainActivity : AppCompatActivity(), dataAdapter.onNodeListener, SensorEven
                 println(nekaj[0] + " " + nekaj[1] + " " + nekaj[2])            }
         }
         cursor.close()
+    }
+
+    @SuppressLint("Range")
+    fun getAllFromCars() {
+        val db = DatabaseHelper(this, null)
+        val curs = db.getAllFromCarNum()
+
+        if (curs!!.moveToFirst()) {
+            var one = mutableListOf(curs.getString(curs.getColumnIndex(DatabaseHelper.NUM_COL)), curs.getString(curs.getColumnIndex(DatabaseHelper.LOCATION_COL)), curs.getString(curs.getColumnIndex(DatabaseHelper.TIME_COL)))
+            println(one[0] + " " + one[1] + " " + one[2])
+            while(curs.moveToNext()){
+                var two = mutableListOf(curs.getString(curs.getColumnIndex(DatabaseHelper.NUM_COL)), curs.getString(curs.getColumnIndex(DatabaseHelper.LOCATION_COL)), curs.getString(curs.getColumnIndex(DatabaseHelper.TIME_COL)))
+                println(two[0] + " " + two[1] + " " + two[2])            }
+        }
+        curs.close()
     }
 
     //steps
