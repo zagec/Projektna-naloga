@@ -14,14 +14,54 @@ class DatabaseHelper(context: Context, factory: SQLiteDatabase.CursorFactory?) :
                 + ID_COL + " INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, " +
                 NUM_COL + " INT NOT NULL," +
                 TIME_COL + " TEXT NOT NULL," +
-                LOCATION_COL + " TEXT NOT NULL" + ");")
+                LOCATION_COL + " TEXT NOT NULL" + ");"
+                )
+
+        val bestRoad = ("CREATE TABLE " + CAR_NUM_TABLE + " ("
+                + ID_COL + " INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, " +
+                NUM_COL + " INT NOT NULL," +
+                TIME_COL + " TEXT NOT NULL," +
+                LOCATION_COL + " TEXT NOT NULL" + ");"
+                )
 
         db.execSQL(queryTime)
+        db.execSQL(bestRoad)
     }
 
     override fun onUpgrade(db: SQLiteDatabase, p1: Int, p2: Int) {
         db.execSQL("DROP TABLE IF EXISTS ${PEOPLE_NUM_TABLE}")
+        db.execSQL("DROP TABLE IF EXISTS ${CAR_NUM_TABLE}")
         onCreate(db)
+    }
+
+    // ------------------ CAR COUNT --------------------------------------
+
+    fun addCarNumToDB(num: Int, location: String, date: String){
+        val values = ContentValues()
+
+        values.put(NUM_COL, num)
+        values.put(LOCATION_COL, location)
+        values.put(TIME_COL, date)
+
+        val db = this.writableDatabase
+
+        db.insert(CAR_NUM_TABLE, null, values)
+        db.close()
+    }
+
+    fun clearCartable() {
+        val db = this.readableDatabase
+
+        val clearDBQuery = "DELETE FROM $CAR_NUM_TABLE"
+        db.execSQL(clearDBQuery)
+    }
+
+    fun getAllFromCarNum(): Cursor? {
+        val db = this.readableDatabase
+
+        val queryGetAll = "SELECT * FROM ${CAR_NUM_TABLE}"
+
+        return db.rawQuery(queryGetAll, null)
     }
 
     // ------------------ PEOPLE COUNT --------------------------------------
@@ -67,5 +107,7 @@ class DatabaseHelper(context: Context, factory: SQLiteDatabase.CursorFactory?) :
         val NUM_COL = "num"
         val LOCATION_COL = "location"
         val TIME_COL = "timeOfCapture" //format je YYYY-MM-DD HH:MM
+
+        val CAR_NUM_TABLE = "Cars"
     }
 }
