@@ -30,12 +30,12 @@
 
             <androidx.appcompat.widget.SwitchCompat
                 android:id="@+id/btn"
-                android:scaleX="0.8"
-                android:scaleY="0.8"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="80dp"
-                android:layout_toEndOf="@+id/dataName" />
+                android:layout_marginStart="@dimen/margin_7"
+                android:layout_toEndOf="@+id/dataName"
+                android:scaleX="0.8"
+                android:scaleY="0.8" />
 
             <TextView
                 android:id="@+id/dataInfo"
@@ -43,8 +43,8 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/dataName"
                 android:layout_alignParentStart="true"
-                android:layout_marginStart="10dp"
-                android:layout_marginTop="5dp"
+                android:layout_marginStart="@dimen/text_margin"
+                android:layout_marginTop="@dimen/margin_o1"
                 android:text="@string/dataInfo"
                 android:textColor="@color/orange"
                 android:textSize="11sp" />
@@ -55,8 +55,8 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/dataInfo"
                 android:layout_alignParentStart="true"
-                android:layout_marginStart="10dp"
-                android:layout_marginTop="5dp"
+                android:layout_marginStart="@dimen/text_margin"
+                android:layout_marginTop="@dimen/margin_o1"
                 android:text="@string/location"
                 android:textColor="@color/orange"
                 android:textSize="11sp" />
@@ -67,8 +67,8 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/location"
                 android:layout_alignParentStart="true"
-                android:layout_marginStart="10dp"
-                android:layout_marginTop="5dp"
+                android:layout_marginStart="@dimen/text_margin"
+                android:layout_marginTop="@dimen/margin_o1"
                 android:text="@string/dataTime"
                 android:textColor="@color/orange"
                 android:textSize="11sp" />
@@ -77,24 +77,24 @@
                 android:id="@+id/dateTimeVal"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_below="@+id/location"
+                android:layout_marginStart="@dimen/margin_o1"
+                android:layout_marginTop="@dimen/margin_o1"
                 android:layout_toEndOf="@id/dataTime"
                 android:text="@string/dataTimeValue"
-                android:layout_marginTop="5dp"
-                android:textSize="11sp"
                 android:textColor="@color/orange"
-                android:layout_marginStart="5dp"
-                android:layout_below="@+id/location" />
+                android:textSize="11sp" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_below="@+id/location"
+                android:layout_marginStart="@dimen/margin_o1"
+                android:layout_marginTop="@dimen/margin_o1"
                 android:layout_toEndOf="@id/dateTimeVal"
                 android:text="@string/mins"
-                android:layout_marginTop="5dp"
-                android:textSize="11sp"
                 android:textColor="@color/orange"
-                android:layout_marginStart="5dp"
-                android:layout_below="@+id/location" />
+                android:textSize="11sp" />
 
 
 

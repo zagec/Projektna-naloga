@@ -1,12 +1,15 @@
 package com.mygdx.game;
 
+import static com.mongodb.MongoClientSettings.getDefaultCodecRegistry;
+import static com.mongodb.client.model.Filters.eq;
+import static org.bson.codecs.configuration.CodecRegistries.fromProviders;
+import static org.bson.codecs.configuration.CodecRegistries.fromRegistries;
+
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
@@ -20,15 +23,22 @@ import com.badlogic.gdx.maps.tiled.tiles.StaticTiledMapTile;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ScreenUtils;
+import com.mongodb.client.FindIterable;
+import com.mongodb.client.MongoCollection;
 import com.mygdx.game.utils.Geolocation;
 import com.mygdx.game.utils.MapRasterTiles;
 import com.mygdx.game.utils.PixelPosition;
 import com.mygdx.game.utils.ZoomXY;
+import com.mygdx.game.utils.db.ConnectToDB;
+import com.mygdx.game.utils.db.Restaurant;
 
-import java.io.ByteArrayOutputStream;
+import org.bson.codecs.configuration.CodecProvider;
+import org.bson.codecs.configuration.CodecRegistry;
+import org.bson.codecs.pojo.PojoCodecProvider;
+
 import java.io.IOException;
-import java.net.URL;
 
 public class ProjectTest extends ApplicationAdapter implements GestureDetector.GestureListener {
 
@@ -45,12 +55,17 @@ public class ProjectTest extends ApplicationAdapter implements GestureDetector.G
     private Texture markerTexture;
     private ZoomXY beginTile;   // top left tile
 
-    private final int NUM_TILES = 3;
+    private final int NUM_TILES = 6;
     private final int ZOOM = 15;
     private final Geolocation CENTER_GEOLOCATION = new Geolocation(46.557314, 15.637771);
-    private final Geolocation MARKER_GEOLOCATION = new Geolocation(46.559070, 15.638100);
     private final int WIDTH = MapRasterTiles.TILE_SIZE * NUM_TILES;
     private final int HEIGHT = MapRasterTiles.TILE_SIZE * NUM_TILES;
+    //database connection
+    CodecProvider pojoCodecProvider = PojoCodecProvider.builder().automatic(true).build();
+    CodecRegistry pojoCodecRegistry = fromRegistries(getDefaultCodecRegistry(), fromProviders(pojoCodecProvider));
+    private final ConnectToDB db =  new ConnectToDB();
+    private final MongoCollection<Restaurant> collection = db.database.getCollection("resturants", Restaurant.class).withCodecRegistry(pojoCodecRegistry);;
+    Array<PixelPosition> markerArr = new Array<>();
 
     @Override
     public void create() {
@@ -95,7 +110,7 @@ public class ProjectTest extends ApplicationAdapter implements GestureDetector.G
             }
         }
         layers.add(layer);
-
+        setMarkers();
         tiledMapRenderer = new OrthogonalTiledMapRenderer(tiledMap);
     }
 
@@ -114,13 +129,6 @@ public class ProjectTest extends ApplicationAdapter implements GestureDetector.G
     }
 
     private void drawMarkers() {
-        PixelPosition[] markerArr = new PixelPosition[2];
-        PixelPosition marker = MapRasterTiles.getPixelPosition(MARKER_GEOLOCATION.lat, MARKER_GEOLOCATION.lng, MapRasterTiles.TILE_SIZE, ZOOM, beginTile.x, beginTile.y, HEIGHT);
-        PixelPosition marker2 = MapRasterTiles.getPixelPosition(CENTER_GEOLOCATION.lat, CENTER_GEOLOCATION.lng, MapRasterTiles.TILE_SIZE, ZOOM, beginTile.x, beginTile.y, HEIGHT);
-
-
-        markerArr[0] = marker;
-        markerArr[1] = marker2;
 
 //        shapeRenderer.setProjectionMatrix(camera.combined);
         batch.setProjectionMatrix(camera.combined);
@@ -128,12 +136,21 @@ public class ProjectTest extends ApplicationAdapter implements GestureDetector.G
 
 //        shapeRenderer.setColor(Color.ORANGE);
 //        shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
-        for(int i = 0; i<markerArr.length; i++){
-            batch.draw(markerTexture, markerArr[i].x, markerArr[i].y);
+        for(PixelPosition marker : markerArr){
+            batch.draw(markerTexture, marker.x, marker.y);
 //            shapeRenderer.circle(markerArr[i].x, markerArr[i].y, 10);
         }
         batch.end();
 //        shapeRenderer.end();
+    }
+    private void setMarkers(){
+        //was trying to pull wrong data from mongodb
+        FindIterable<Restaurant> docs = collection.find();// seznam restavracij
+        for(Restaurant doc : docs){
+            Geolocation MARKER_GEOLOCATION = new Geolocation(doc.getLoc().get(0), doc.getLoc().get(1));
+            PixelPosition marker = MapRasterTiles.getPixelPosition(MARKER_GEOLOCATION.lat, MARKER_GEOLOCATION.lng, MapRasterTiles.TILE_SIZE, ZOOM, beginTile.x, beginTile.y, HEIGHT);
+            markerArr.add(marker);
+        }
     }
 
     @Override
@@ -151,12 +168,31 @@ public class ProjectTest extends ApplicationAdapter implements GestureDetector.G
 
     @Override
     public boolean tap(float x, float y, int count, int button) {
-        return false;
+        float procX = x/900;
+        float procy = y/900;
+        procy = 1 - procy;
+        float woroldX = procX * WIDTH - 15;
+        float woroldY = procy * HEIGHT;
+        PixelPosition marker = new PixelPosition((int)woroldX,(int)woroldY);
+        markerArr.add(marker);
+        return true;
     }
 
     @Override
     public boolean longPress(float x, float y) {
-        return false;
+        float procX = x/900;
+        float procy = y/900;
+        procy = 1 - procy;
+        float woroldX = procX * WIDTH - 15;
+        float woroldY = procy * HEIGHT;
+        for(PixelPosition marker :markerArr){
+            if(woroldY < markerTexture.getHeight() + marker.y  && woroldY > marker.y){
+                if (woroldX < markerTexture.getWidth() + marker.x &&  woroldX > marker.x){
+                    markerArr.removeValue(marker,false);
+                }
+            }
+        }
+        return true;
     }
 
     @Override
@@ -213,7 +249,7 @@ public class ProjectTest extends ApplicationAdapter implements GestureDetector.G
         if (Gdx.input.isKeyPressed(Input.Keys.W)) {
             camera.translate(0, 3, 0);
         }
-
+        if(Gdx.input.isKeyPressed(Input.Keys.ESCAPE)) Gdx.app.exit();
         camera.zoom = MathUtils.clamp(camera.zoom, 0.5f, 2f);
 
         float effectiveViewportWidth = camera.viewportWidth * camera.zoom;

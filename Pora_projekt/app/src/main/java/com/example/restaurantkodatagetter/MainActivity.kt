@@ -1,9 +1,5 @@
 package com.example.restaurantkodatagetter
 
-<<<<<<< Updated upstream
-import androidx.appcompat.app.AppCompatActivity
-import android.os.Bundle
-=======
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.SharedPreferences
@@ -17,7 +13,6 @@ import android.os.Bundle
 import android.widget.TextView
 import android.widget.Toast
 import androidx.annotation.RequiresApi
->>>>>>> Stashed changes
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.restaurantkodatagetter.databinding.ActivityMainBinding
@@ -27,9 +22,16 @@ import java.time.format.DateTimeFormatter
 lateinit var sharedPref: SharedPreferences
 const val MY_SP_FILE_NAME = "myshared.data"
 
-class MainActivity : AppCompatActivity(), dataAdapter.onNodeListener {
+class MainActivity : AppCompatActivity(), dataAdapter.onNodeListener, SensorEventListener {
     lateinit var binding: ActivityMainBinding
     var dataArr: MutableList<Data> = mutableListOf()
+
+    //steps
+    private var sensorManager: SensorManager? = null
+    private var running = false
+    private var totalSteps = 0f
+    private var previousTotalSteps = 0f
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -39,9 +41,6 @@ class MainActivity : AppCompatActivity(), dataAdapter.onNodeListener {
         var dataPeople = getAllFromPeople()
 
         //dodaj svojo data thingy (time je v min pomojem najboljse)
-<<<<<<< Updated upstream
-        dataArr.add(Data("Number of People in restaurant", "Gets number of people from an image", 30, "Location of the restaurant", true))
-=======
         dataArr.add(
             Data(
                 "Number of People in restaurant",
@@ -74,17 +73,14 @@ class MainActivity : AppCompatActivity(), dataAdapter.onNodeListener {
                 db.addPeopleNumToDB(2, "test", getDateNow())
             }
         }
->>>>>>> Stashed changes
 
         val dataArrClickListener = { position: Int ->
             println(dataArr[position].enabled)
         }
         val rvConcerts = binding.dataRV as RecyclerView
-        val adapterConcertView = dataAdapter(dataArr,this, dataArrClickListener)
+        val adapterConcertView = dataAdapter(dataArr, this, dataArrClickListener)
         rvConcerts.adapter = adapterConcertView
         rvConcerts.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
-<<<<<<< Updated upstream
-=======
         //steps
         sensorManager = getSystemService(Context.SENSOR_SERVICE) as SensorManager
     }
@@ -152,7 +148,6 @@ class MainActivity : AppCompatActivity(), dataAdapter.onNodeListener {
     }
 
     override fun onAccuracyChanged(p0: Sensor?, p1: Int) {
->>>>>>> Stashed changes
     }
 
     override fun onNoteClick(position2: Int) {

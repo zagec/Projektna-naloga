@@ -1,19 +1,11 @@
 <resources>
-<<<<<<< Updated upstream
-    <string name="app_name">Restaurantko Data Getter</string>
-=======
     <string name="app_name" translatable="false">Restevrantko Data Getter</string>
->>>>>>> Stashed changes
     <string name="data">Possible data to get</string>
-    <string name="dataName">data title</string>
+    <string name="dataName" translatable="false">data title</string>
     <string name="dataTime">Every</string>
     <string name="location">location</string>
     <string name="dataInfo">Getting Type of data</string>
-<<<<<<< Updated upstream
-    <string name="dataTimeValue">0</string>
-=======
     <string name="dataTimeValue" translatable="false">0</string>
     <string name="sendTestDataPeople" translatable="false">Send people num test</string>
->>>>>>> Stashed changes
     <string name="mins">minutes</string>
 </resources>
