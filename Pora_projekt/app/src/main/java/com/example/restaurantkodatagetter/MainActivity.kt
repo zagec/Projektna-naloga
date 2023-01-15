@@ -39,23 +39,24 @@ class MainActivity : AppCompatActivity(), dataAdapter.onNodeListener, SensorEven
                 true
             )
         )
-        dataArr.add(Data(
-            "Number of Cars on the roads to the restaurant",
-            "Get number of cars from an image",
-            25,
-            "Owners location",
-            true
-        ))
+        dataArr.add(
+            Data(
+                "Number of Cars on the roads to the restaurant",
+                "Get number of cars from an image",
+                25,
+                "Owners location",
+                true
+            )
+        )
 
         //steps
         dataArr.add(Data("Number of steps", "Counts your steps", 2, "Your location", true))
 
 
-
         val dataArrClickListener = { position: Int ->
             println(dataArr[position].enabled)
         }
-        val rvConcerts = binding.dataRV as RecyclerView
+        val rvConcerts = binding.dataRV //as RecyclerView
         val adapterConcertView = dataAdapter(dataArr, this, dataArrClickListener)
         rvConcerts.adapter = adapterConcertView
         rvConcerts.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
