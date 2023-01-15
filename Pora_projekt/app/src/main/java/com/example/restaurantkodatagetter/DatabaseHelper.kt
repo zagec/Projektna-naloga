@@ -76,6 +76,8 @@ class DatabaseHelper(context: Context, factory: SQLiteDatabase.CursorFactory?) :
         val db = this.writableDatabase
 
         db.insert(PEOPLE_NUM_TABLE, null, values)
+
+        println("ADDED TO PEOPLE NUM TABLE, VALUES: num: " + num + ", location: " + location + ", time: "  + date)
         db.close()
     }
 

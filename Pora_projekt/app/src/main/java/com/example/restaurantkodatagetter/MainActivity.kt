@@ -1,23 +1,29 @@
 package com.example.restaurantkodatagetter
 
+import android.Manifest
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.SharedPreferences
+import android.content.pm.PackageManager
 import android.hardware.Sensor
 import android.hardware.SensorEvent
 import android.hardware.SensorEventListener
 import android.hardware.SensorManager
+import android.location.LocationManager
 import android.os.Build
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.widget.TextView
+import android.os.Handler
 import android.widget.Toast
 import androidx.annotation.RequiresApi
+import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.example.restaurantkodatagetter.databinding.ActivityMainBinding
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
+import java.util.*
+
 
 lateinit var sharedPref: SharedPreferences
 const val MY_SP_FILE_NAME = "myshared.data"
@@ -31,12 +37,15 @@ class MainActivity : AppCompatActivity(), dataAdapter.onNodeListener, SensorEven
     private var running = false
     private var totalSteps = 0f
     private var previousTotalSteps = 0f
+    private lateinit var locationManager: LocationManager
+    private val locationPermissionCode = 2
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        val db = DatabaseHelper(this, null)
 
         var dataPeople = getAllFromPeople()
         var dataCars = getAllFromCars()
@@ -86,6 +95,34 @@ class MainActivity : AppCompatActivity(), dataAdapter.onNodeListener, SensorEven
         rvConcerts.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
         //steps
         sensorManager = getSystemService(Context.SENSOR_SERVICE) as SensorManager
+
+        val timer = Timer()
+        //600000
+        timer.schedule(timerFunForPeople(db), 0, (dataArr[0].time * 60000).toLong()) //execute in every 30 min
+    }
+
+    private fun getLocation() {
+
+    }
+
+    fun timerFunForPeople(db: DatabaseHelper): TimerTask{
+        val handler = Handler()
+
+        return object : TimerTask() {
+            @RequiresApi(Build.VERSION_CODES.O)
+            override fun run() {
+                if(dataArr[0].enabled){
+                    handler.post(Runnable {
+                        try {
+                            var number = (0..10).random()
+                            db.addPeopleNumToDB(number, "test", getDateNow())
+                        } catch (e: Exception) {
+                        }
+                    })
+                }
+            }
+        }
+
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
