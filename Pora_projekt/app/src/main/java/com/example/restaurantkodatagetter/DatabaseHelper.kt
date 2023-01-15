@@ -56,6 +56,7 @@ class DatabaseHelper(context: Context, factory: SQLiteDatabase.CursorFactory?) :
         val db = this.writableDatabase
 
         db.insert(CAR_NUM_TABLE, null, values)
+        println("ADDED TO CAR NUM TABLE, VALUES: num: " + num + ", location: " + location + ", time: "  + date)
         db.close()
     }
 
@@ -84,7 +85,7 @@ class DatabaseHelper(context: Context, factory: SQLiteDatabase.CursorFactory?) :
 
         val db = this.writableDatabase
 
-        db.insert(CAR_NUM_TABLE, null, values)
+        db.insert(STEPS, null, values)
         db.close()
     }
     fun clearStepsCountTable() {

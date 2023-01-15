@@ -90,6 +90,13 @@ class MainActivity : AppCompatActivity(), dataAdapter.onNodeListener, SensorEven
             }
         }
 
+        binding.btnCars.setOnClickListener{
+            val db = DatabaseHelper(this, null)
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                db.addPeopleNumToDB(2, "test", getDateNow())
+            }
+        }
+
         val dataArrClickListener = { position: Int ->
             println(dataArr[position].enabled)
         }
@@ -106,6 +113,8 @@ class MainActivity : AppCompatActivity(), dataAdapter.onNodeListener, SensorEven
         val timer = Timer()
         //600000
         timer.schedule(timerFunForPeople(db), 0, (dataArr[0].time * 60000).toLong()) //execute in every 30 min
+        timer.schedule(timerStepCounter(db), 0, (dataArr[2].time * 60000).toLong())
+        timer.schedule(timerFunForCars(db), 0, (dataArr[0].time * 60000).toLong())
     }
 
     private fun getLocation() {
@@ -130,7 +139,41 @@ class MainActivity : AppCompatActivity(), dataAdapter.onNodeListener, SensorEven
             }
         }
 
+    }
 
+    fun timerFunForCars(db: DatabaseHelper): TimerTask{
+        val handler = Handler()
+
+        return object : TimerTask() {
+            @RequiresApi(Build.VERSION_CODES.O)
+            override fun run() {
+                if(dataArr[0].enabled){
+                    handler.post(Runnable {
+                        try {
+                            var number = (0..10).random()
+                            db.addCarNumToDB(number, "test", getDateNow())
+                        } catch (e: Exception) {
+                        }
+                    })
+                }
+            }
+        }
+
+    }
+
+    fun timerStepCounter(db: DatabaseHelper): TimerTask{
+        val mainExecutor = ContextCompat.getMainExecutor(this)
+        return object : TimerTask() {
+            @RequiresApi(Build.VERSION_CODES.O)
+            override fun run() {
+                if(dataArr[2].enabled){
+                    mainExecutor.execute{
+                        val number = (0..10).random()
+                        db.addStepCountToDb(number, app.getID().toString(), "test",getDateNow())
+                    }
+                }
+            }
+        }
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
