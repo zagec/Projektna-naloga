@@ -12,6 +12,6 @@ public class DesktopLauncher {
 		config.setTitle("Restaurantko Map");
 		config.setWindowedMode(900, 900);
 		config.setResizable(false);
-		new Lwjgl3Application(new ProjectTest(), config);
+		new Lwjgl3Application(new RestaurantkoMap(), config);
 	}
 }

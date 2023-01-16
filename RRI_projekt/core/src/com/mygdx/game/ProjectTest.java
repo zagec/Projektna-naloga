@@ -8,6 +8,7 @@ import static org.bson.codecs.configuration.CodecRegistries.fromRegistries;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
@@ -27,14 +28,27 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.bullet.collision._btMprSupport_t;
+import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Button;
+import com.badlogic.gdx.scenes.scene2d.ui.CheckBox;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ScreenUtils;
+import com.badlogic.gdx.utils.viewport.FitViewport;
+import com.badlogic.gdx.utils.viewport.Viewport;
 import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
 import com.mygdx.game.utils.Geolocation;
 import com.mygdx.game.utils.MapRasterTiles;
 import com.mygdx.game.utils.PixelPosition;
 import com.mygdx.game.utils.ZoomXY;
+import com.mygdx.game.utils.config.Config;
 import com.mygdx.game.utils.db.ConnectToDB;
 import com.mygdx.game.utils.db.Restaurant;
 
@@ -48,13 +62,12 @@ import java.util.List;
 
 import jdk.internal.net.http.common.Pair;
 
-public class ProjectTest extends ApplicationAdapter implements GestureDetector.GestureListener {
+public class ProjectTest extends ScreenAdapter implements GestureDetector.GestureListener {
 
     private ShapeRenderer shapeRenderer;
     public static SpriteBatch batch;
 
     public BitmapFont font;
-
 
     private Vector3 touchPosition;
 
@@ -62,13 +75,16 @@ public class ProjectTest extends ApplicationAdapter implements GestureDetector.G
     private TiledMapRenderer tiledMapRenderer;
     private OrthographicCamera camera;
 
-    private Texture[] mapTiles;
-    private Texture markerTexture;
-    private ZoomXY beginTile;   // top left tile
+    public static Texture[] mapTiles;
+    public static Texture markerTexture;
+    public static ZoomXY beginTile;   // top left tile
 
-    private final int NUM_TILES = 6;
-    private final int ZOOM = 15;
-    private final Geolocation CENTER_GEOLOCATION = new Geolocation(46.557314, 15.637771);
+    private final RestaurantkoMap game;
+    private Viewport viewport;
+
+    public static final int NUM_TILES = 6;
+    public static final int ZOOM = 15;
+    public static final Geolocation CENTER_GEOLOCATION = new Geolocation(46.557314, 15.637771);
     private final int WIDTH = MapRasterTiles.TILE_SIZE * NUM_TILES;
     private final int HEIGHT = MapRasterTiles.TILE_SIZE * NUM_TILES;
     //databse connection
@@ -82,18 +98,25 @@ public class ProjectTest extends ApplicationAdapter implements GestureDetector.G
     public static GlyphLayout layout = new GlyphLayout();
     Texture restInfo;
     boolean showRestaurantInfo = false;
+    boolean addingMarker = false;
     PixelPosition positionOfDisplay = new PixelPosition(0,0);
     String restaurantDisplayName = "null";
     String restaurantDisplayStreet = "null";
 
+    private Stage stage;
+
+    public ProjectTest(RestaurantkoMap game) {
+        this.game = game;
+    }
     @Override
-    public void create() {
-//        Restaurant doc = collection.find(eq("ime", "Big Panda restavracija")).first();// posamezna restavracija
-//        if (doc != null) {
-//            System.out.println(doc.getLoc());
-//        } else {
-//            System.out.println("No matching documents found.");
-//        }
+    public void resize(int width, int height) {
+        viewport.update(width, height, true);
+    }
+
+
+    @Override
+    public void show() {
+        viewport = new FitViewport(Config.HUD_WIDTH, Config.HUD_HEIGHT);
 
         restInfo = new Texture("gray_background.jpg");
         shapeRenderer = new ShapeRenderer();
@@ -114,18 +137,20 @@ public class ProjectTest extends ApplicationAdapter implements GestureDetector.G
         touchPosition = new Vector3();
         Gdx.input.setInputProcessor(new GestureDetector(this));
 
-        try {
-            //in most cases, geolocation won't be in the center of the tile because tile borders are predetermined (geolocation can be at the corner of a tile)
-            ZoomXY centerTile = MapRasterTiles.getTileNumber(CENTER_GEOLOCATION.lat, CENTER_GEOLOCATION.lng, ZOOM);
-            mapTiles = MapRasterTiles.getRasterTileZone(centerTile, NUM_TILES);
-            //you need the beginning tile (tile on the top left corner) to convert geolocation to a location in pixels.
-            beginTile = new ZoomXY(ZOOM, centerTile.x - ((NUM_TILES - 1) / 2), centerTile.y - ((NUM_TILES - 1) / 2));
+        stage = new Stage(viewport, game.getBatch());
 
-            markerTexture = MapRasterTiles.getTextureMarker();
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+//        try {
+//            //in most cases, geolocation won't be in the center of the tile because tile borders are predetermined (geolocation can be at the corner of a tile)
+//            ZoomXY centerTile = MapRasterTiles.getTileNumber(CENTER_GEOLOCATION.lat, CENTER_GEOLOCATION.lng, ZOOM);
+//            mapTiles = MapRasterTiles.getRasterTileZone(centerTile, NUM_TILES);
+//            //you need the beginning tile (tile on the top left corner) to convert geolocation to a location in pixels.
+//            beginTile = new ZoomXY(ZOOM, centerTile.x - ((NUM_TILES - 1) / 2), centerTile.y - ((NUM_TILES - 1) / 2));
+//
+//            markerTexture = MapRasterTiles.getTextureMarker();
+//
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
 
         tiledMap = new TiledMap();
         MapLayers layers = tiledMap.getLayers();
@@ -146,7 +171,7 @@ public class ProjectTest extends ApplicationAdapter implements GestureDetector.G
     }
 
     @Override
-    public void render() {
+    public void render(float delta) {
         ScreenUtils.clear(0, 0, 0, 1);
 
         handleInput();
@@ -157,6 +182,9 @@ public class ProjectTest extends ApplicationAdapter implements GestureDetector.G
         tiledMapRenderer.render();
 
         drawMarkers();
+
+        stage.act(delta);
+        stage.draw();
     }
 
     private void drawMarkers() {
@@ -184,6 +212,10 @@ public class ProjectTest extends ApplicationAdapter implements GestureDetector.G
             font.draw(batch, restaurantDisplayName, positionOfDisplay.x + 20, positionOfDisplay.y + 2*heightName + 20);
             font.draw(batch, restaurantDisplayStreet, positionOfDisplay.x + 20, positionOfDisplay.y + heightStreet + 10);
         }
+        else if(addingMarker){
+
+        }
+
         batch.end();
     }
     private void setMarkers(){
@@ -339,4 +371,5 @@ public class ProjectTest extends ApplicationAdapter implements GestureDetector.G
 //        camera.position.x = effectiveViewportWidth;
 //        camera.position.y = effectiveViewportHeight;
     }
+
 }
