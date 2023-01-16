@@ -52,6 +52,10 @@ project(":desktop") {
         api "com.badlogicgames.gdx:gdx-box2d-platform:$gdxVersion:natives-desktop"
         api "com.badlogicgames.gdx:gdx-bullet-platform:$gdxVersion:natives-desktop"
         api "com.badlogicgames.gdx-controllers:gdx-controllers-desktop:$gdxControllersVersion"
+        implementation 'com.google.code.gson:gson:2.10'
+        implementation 'com.github.filosganga:geogson-core:1.2.21'
+        implementation 'org.wololo:jts2geojson:0.18.1'
+        implementation 'org.mongodb:mongodb-driver-sync:4.8.2'
         
     }
 }
