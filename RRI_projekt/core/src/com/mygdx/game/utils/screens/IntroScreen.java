@@ -30,7 +30,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class IntroScreen extends ScreenAdapter {
-    public static final float INTRO_DURATION_IN_SEC = 5.1f;
+    public static final float INTRO_DURATION_IN_SEC = 5.3f;
 
     private final RestaurantkoMap game;
     private final AssetManager assetManager;

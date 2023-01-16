@@ -28,6 +28,16 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.bullet.collision._btMprSupport_t;
+import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Button;
+import com.badlogic.gdx.scenes.scene2d.ui.CheckBox;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.FitViewport;
@@ -88,9 +98,12 @@ public class ProjectTest extends ScreenAdapter implements GestureDetector.Gestur
     public static GlyphLayout layout = new GlyphLayout();
     Texture restInfo;
     boolean showRestaurantInfo = false;
+    boolean addingMarker = false;
     PixelPosition positionOfDisplay = new PixelPosition(0,0);
     String restaurantDisplayName = "null";
     String restaurantDisplayStreet = "null";
+
+    private Stage stage;
 
     public ProjectTest(RestaurantkoMap game) {
         this.game = game;
@@ -104,13 +117,6 @@ public class ProjectTest extends ScreenAdapter implements GestureDetector.Gestur
     @Override
     public void show() {
         viewport = new FitViewport(Config.HUD_WIDTH, Config.HUD_HEIGHT);
-
-//        Restaurant doc = collection.find(eq("ime", "Big Panda restavracija")).first();// posamezna restavracija
-//        if (doc != null) {
-//            System.out.println(doc.getLoc());
-//        } else {
-//            System.out.println("No matching documents found.");
-//        }
 
         restInfo = new Texture("gray_background.jpg");
         shapeRenderer = new ShapeRenderer();
@@ -130,6 +136,8 @@ public class ProjectTest extends ScreenAdapter implements GestureDetector.Gestur
 
         touchPosition = new Vector3();
         Gdx.input.setInputProcessor(new GestureDetector(this));
+
+        stage = new Stage(viewport, game.getBatch());
 
 //        try {
 //            //in most cases, geolocation won't be in the center of the tile because tile borders are predetermined (geolocation can be at the corner of a tile)
@@ -174,6 +182,9 @@ public class ProjectTest extends ScreenAdapter implements GestureDetector.Gestur
         tiledMapRenderer.render();
 
         drawMarkers();
+
+        stage.act(delta);
+        stage.draw();
     }
 
     private void drawMarkers() {
@@ -201,6 +212,10 @@ public class ProjectTest extends ScreenAdapter implements GestureDetector.Gestur
             font.draw(batch, restaurantDisplayName, positionOfDisplay.x + 20, positionOfDisplay.y + 2*heightName + 20);
             font.draw(batch, restaurantDisplayStreet, positionOfDisplay.x + 20, positionOfDisplay.y + heightStreet + 10);
         }
+        else if(addingMarker){
+
+        }
+
         batch.end();
     }
     private void setMarkers(){
@@ -356,4 +371,5 @@ public class ProjectTest extends ScreenAdapter implements GestureDetector.Gestur
 //        camera.position.x = effectiveViewportWidth;
 //        camera.position.y = effectiveViewportHeight;
     }
+
 }
