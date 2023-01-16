@@ -80,13 +80,10 @@ class MainActivity : AppCompatActivity(), dataAdapter.onNodeListener, SensorEven
             "Your location",
             true))
 
-
         binding.btnPeople.setOnClickListener{
             timerFunForPeople(db)
         }
 
-<<<<<<< Updated upstream
-=======
         binding.btnCars.setOnClickListener{
             timerFunForCars(db)
         }
@@ -95,7 +92,6 @@ class MainActivity : AppCompatActivity(), dataAdapter.onNodeListener, SensorEven
             timerStepCounter(db)
         }
 
->>>>>>> Stashed changes
         val dataArrClickListener = { position: Int ->
             println(dataArr[position].enabled)
         }
@@ -103,18 +99,35 @@ class MainActivity : AppCompatActivity(), dataAdapter.onNodeListener, SensorEven
         val adapterConcertView = dataAdapter(dataArr, this, dataArrClickListener)
         rvConcerts.adapter = adapterConcertView
         rvConcerts.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
+
         //steps
         sensorManager = getSystemService(Context.SENSOR_SERVICE) as SensorManager
-
         stepSensor = sensorManager?.getDefaultSensor(Sensor.TYPE_STEP_COUNTER)
 
         val timer = Timer()
         //600000
-        timer.schedule(timerFunForPeople(db), 0, (dataArr[0].time * 60000).toLong()) //execute in every 30 min
+        timer.schedule(timerFunForCars(db), 0, (dataArr[1].time * 60000).toLong())
+        timer.schedule(timerFunForSteps(db), 0, (dataArr[2].time * 60000).toLong())
+        timer.schedule(timerFunForPeople(db), 0, (dataArr[0].time * 60000).toLong())
     }
 
-    private fun getLocation() {
+    fun timerFunForSteps(db: DatabaseHelper): TimerTask{
+        val handler = Handler()
 
+        return object : TimerTask() {
+            @RequiresApi(Build.VERSION_CODES.O)
+            override fun run() {
+                if(dataArr[2].enabled){
+                    handler.post(Runnable {
+                        try {
+                            var number = (0..10).random()
+                            db.addStepCountToDb(number,app.getID().toString(), "test", getDateNow())
+                        } catch (e: Exception) {
+                        }
+                    })
+                }
+            }
+        }
     }
 
     fun timerFunForPeople(db: DatabaseHelper): TimerTask{
@@ -134,10 +147,6 @@ class MainActivity : AppCompatActivity(), dataAdapter.onNodeListener, SensorEven
                 }
             }
         }
-<<<<<<< Updated upstream
-
-
-=======
     }
 
     fun timerFunForCars(db: DatabaseHelper): TimerTask{
@@ -173,7 +182,6 @@ class MainActivity : AppCompatActivity(), dataAdapter.onNodeListener, SensorEven
                 }
             }
         }
->>>>>>> Stashed changes
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
@@ -212,6 +220,7 @@ class MainActivity : AppCompatActivity(), dataAdapter.onNodeListener, SensorEven
         }
         curs.close()
     }
+
     fun stopListening() {
         running = false
         sensorManager?.unregisterListener(this) //always unregister
@@ -263,7 +272,6 @@ class MainActivity : AppCompatActivity(), dataAdapter.onNodeListener, SensorEven
         super.onStop()
         stopListening()
     }
-
 
     override fun onNoteClick(position2: Int) {
         println("click")
