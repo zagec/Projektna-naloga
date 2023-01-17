@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:paddingTop="10dp"
+        android:paddingStart="10dp"
+        android:paddingEnd="10dp"
+        >
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:layout_marginStart="10dp"
+            android:background="@drawable/rounded_corners_frame"
+            android:padding="10dp">
+
+            <TextView
+                android:id="@+id/dataName"
+                android:layout_width="200dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:text="@string/dataName"
+                android:textSize="16sp" />
+
+
+            <androidx.appcompat.widget.SwitchCompat
+                android:id="@+id/btn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/margin_7"
+                android:layout_toEndOf="@+id/dataName"
+                android:scaleX="0.8"
+                android:scaleY="0.8" />
+
+            <TextView
+                android:id="@+id/dataInfo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/dataName"
+                android:layout_alignParentStart="true"
+                android:layout_marginStart="@dimen/text_margin"
+                android:layout_marginTop="@dimen/margin_o1"
+                android:text="@string/dataInfo"
+                android:textColor="@color/orange"
+                android:textSize="11sp" />
+
+            <TextView
+                android:id="@+id/location"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/dataInfo"
+                android:layout_alignParentStart="true"
+                android:layout_marginStart="@dimen/text_margin"
+                android:layout_marginTop="@dimen/margin_o1"
+                android:text="@string/location"
+                android:textColor="@color/orange"
+                android:textSize="11sp" />
+
+            <TextView
+                android:id="@+id/dataTime"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/location"
+                android:layout_alignParentStart="true"
+                android:layout_marginStart="@dimen/text_margin"
+                android:layout_marginTop="@dimen/margin_o1"
+                android:text="@string/dataTime"
+                android:textColor="@color/orange"
+                android:textSize="11sp" />
+
+            <TextView
+                android:id="@+id/dateTimeVal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/location"
+                android:layout_marginStart="@dimen/margin_o1"
+                android:layout_marginTop="@dimen/margin_o1"
+                android:layout_toEndOf="@id/dataTime"
+                android:text="@string/dataTimeValue"
+                android:textColor="@color/orange"
+                android:textSize="11sp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/location"
+                android:layout_marginStart="@dimen/margin_o1"
+                android:layout_marginTop="@dimen/margin_o1"
+                android:layout_toEndOf="@id/dateTimeVal"
+                android:text="@string/mins"
+                android:textColor="@color/orange"
+                android:textSize="11sp" />
+
+
+
+        </RelativeLayout>
+    </RelativeLayout>
+
+</androidx.cardview.widget.CardView>
