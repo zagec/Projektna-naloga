@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <string name="data">Mogoči podatki za pridobiti</string>
-    <string name="location">lokacija</string>
-    <string name="mins">minute</string>
-    <string name="dataTime">vsakih</string>
-    <string name="dataInfo">Dobljena informacija</string>
-</resources>
