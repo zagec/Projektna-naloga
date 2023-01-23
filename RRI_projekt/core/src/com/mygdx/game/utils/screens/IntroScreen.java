@@ -192,12 +192,11 @@ public class IntroScreen extends ScreenAdapter {
                         Actions.parallel(Actions.moveTo(pairs.get(8).snd.posX, pairs.get(8).snd.posY + pairs.get(8).snd.height + 10,1/7f)),
                         Actions.parallel(Actions.moveTo(pairs.get(9).snd.posX, pairs.get(9).snd.posY + pairs.get(9).snd.height + 10,1/7f)),
                         Actions.parallel(Actions.moveTo(pairs.get(10).snd.posX, pairs.get(10).snd.posY + pairs.get(10).snd.height + 10,1/7f)),
-//                        Actions.parallel(Actions.moveTo(pairs.get(11).snd.posX, pairs.get(11).snd.posY + pairs.get(11).snd.height + 10,1/7f)),
 //                        Actions.parallel(Actions.moveTo(pairs.get(11).snd.posX + pairs.get(11).snd.width - 20, pairs.get(11).snd.posY + pairs.get(11).snd.height + 60,0.3f), Actions.rotateBy(360 * 0.3f, 0.3f)),
 //                        Actions.parallel(Actions.moveTo(pairs.get(11).snd.posX + pairs.get(11).snd.width + 10, pairs.get(11).snd.posY,0.7f), Actions.rotateBy(360 * 0.7f, 0.7f)),
                         Actions.parallel(Actions.moveTo(pairs.get(10).snd.posX + pairs.get(10).snd.width - 20, pairs.get(10).snd.posY + pairs.get(10).snd.height + 60,0.3f), Actions.rotateBy(360 * 0.3f, 0.3f)),
                         Actions.parallel(Actions.moveTo(pairs.get(10).snd.posX + pairs.get(10).snd.width - 5, pairs.get(10).snd.posY - 30,0.7f), Actions.rotateBy(360 * 0.7f, 0.7f)),
-                        Actions.parallel(Actions.moveTo(pairs.get(10).snd.posX + pairs.get(10).snd.width - 5, pairs.get(10).snd.posY - 30,0.3f)),
+                        Actions.parallel(Actions.moveTo(pairs.get(10).snd.posX + pairs.get(10).snd.width - 5, pairs.get(10).snd.posY - 30,0.2f)),
 //                        Actions.moveTo(pairs.get(11).snd.posX + pairs.get(11).snd.width + 10,  0 - pairs.get(0).snd.height, 1.0f)
                         Actions.fadeOut(1f)
                 )

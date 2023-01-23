@@ -198,9 +198,19 @@ public class MapRasterTiles {
         double scale = Math.pow(2, zoom);
 
         // Apply scale to world coordinates to get image coordinates
+        System.out.println("func" + (Math.floor(worldCoordinate[0] * scale) - (beginTileX * tileSize)));
         return new PixelPosition(
                 (int) (Math.floor(worldCoordinate[0] * scale) - (beginTileX * tileSize)),
                 height - (int) (Math.floor(worldCoordinate[1] * scale) - (beginTileY * tileSize) - 1)
         );
     }
+
+//    public static double[] getCoords(PixelPosition marker, double lat, double lng) {
+//        double[] worldCoordinate = {0,0};
+//        worldCoordinate[0] =
+//    }
+
+
 }
+
+// 488 = round_down(x * scale) - (beginTileX * tileSize)
