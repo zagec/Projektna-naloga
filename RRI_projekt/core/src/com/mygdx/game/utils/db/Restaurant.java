@@ -1,5 +1,7 @@
 package com.mygdx.game.utils.db;
 
+import org.bson.types.ObjectId;
+
 import java.util.List;
 
 public class Restaurant {
@@ -8,8 +10,21 @@ public class Restaurant {
     String cenaSStudentskimBonom;
     String cenaBrezStudentskegaBona;
     List<Double> loc;
+    ObjectId id;
+    float rating;
 
     public Restaurant(){}
+
+    public Restaurant(Restaurant rest, float rating){
+        this.id = rest.getId();
+        this.ime = rest.getIme();
+        this.lokacija =  rest.getLokacija();
+        this.loc =  rest.getLoc();
+        this.cenaSStudentskimBonom =  rest.getCenaSStudentskimBonom();
+        this.cenaBrezStudentskegaBona =  rest.getCenaBrezStudentskegaBona();
+        this.rating = rating;
+
+    }
 
     public Restaurant(String ime, String lokacija, String cenaSStudentskimBonom, String cenaBrezStudentskegaBona, List<Double> loc) {
         ime = ime.replaceAll("š","s");
@@ -54,10 +69,12 @@ public class Restaurant {
     }
     public void setCenaSStudentskimBonom(String cenaSStudentskimBonom) {this.cenaSStudentskimBonom = cenaSStudentskimBonom;}
     public void setCenaBrezStudentskegaBona(String cenaBrezStudentskegaBona) {this.cenaBrezStudentskegaBona = cenaBrezStudentskegaBona;}
+    public void setId(ObjectId id) { this.id = id; }
+    public void setRating(float rating) { this.rating = rating; }
 
     public String toString(){
-        return "name: " + this.ime + ", lokacija: " + this.lokacija + ", coords: " + this.loc.get(0) + " + " + this.loc.get(1) +
-                 ", price Without bon: " +this.cenaSStudentskimBonom + ", price with bon: " + this.cenaBrezStudentskegaBona;
+        return "id: " + this.id.toString() + ", name: " + this.ime + ", lokacija: " + this.lokacija + ", coords: " + this.loc.get(0) + " + " + this.loc.get(1) +
+                 ", price Without bon: " +this.cenaSStudentskimBonom + ", price with bon: " + this.cenaBrezStudentskegaBona + ", rating: " +this.rating;
     }
 
     public String getIme() {
@@ -75,4 +92,6 @@ public class Restaurant {
     public String getCenaBrezStudentskegaBona() {
         return cenaBrezStudentskegaBona;
     }
+    public ObjectId getId() {return id;}
+    public float getRating() {return rating;}
 }

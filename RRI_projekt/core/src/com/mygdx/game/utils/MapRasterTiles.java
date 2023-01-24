@@ -198,7 +198,6 @@ public class MapRasterTiles {
         double scale = Math.pow(2, zoom);
 
         // Apply scale to world coordinates to get image coordinates
-        System.out.println("func" + (Math.floor(worldCoordinate[0] * scale) - (beginTileX * tileSize)));
         return new PixelPosition(
                 (int) (Math.floor(worldCoordinate[0] * scale) - (beginTileX * tileSize)),
                 height - (int) (Math.floor(worldCoordinate[1] * scale) - (beginTileY * tileSize) - 1)
