@@ -1,4 +1,6 @@
-package com.mygdx.game.utils;
+package com.mygdx.game.utils.db;
+
+import org.bson.types.ObjectId;
 
 public class User {
     String username;
@@ -6,6 +8,7 @@ public class User {
     String password;
     boolean admin;
     String status;
+    ObjectId id;
 
     public User(){
         username = "null";
@@ -18,6 +21,7 @@ public class User {
     @Override
     public String toString() {
         return "User{" +
+                "id='" + id.toString() + '\'' +
                 "username='" + username + '\'' +
                 ", email='" + email + '\'' +
                 ", password='" + password + '\'' +
@@ -31,10 +35,12 @@ public class User {
     public void setPassword(String password) { this.password = password; }
     public void setStatus(String status) { this.status = status; }
     public void setAdmin(boolean admin) { this.admin = admin; }
+    public void setId(ObjectId id) { this.id = id; }
 
     public String getUsername() { return this.username; }
     public String getEmail() { return this.email; }
     public String getPassword() { return this.password; }
     public String getStatus() { return this.status; }
     public boolean getAdmin() { return this.admin; }
+    public ObjectId getId() {return id;}
 }

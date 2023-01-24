@@ -6,7 +6,6 @@ import static com.mongodb.client.model.Filters.or;
 import static org.bson.codecs.configuration.CodecRegistries.fromProviders;
 import static org.bson.codecs.configuration.CodecRegistries.fromRegistries;
 
-import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputMultiplexer;
@@ -31,6 +30,8 @@ import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Button;
+import com.badlogic.gdx.scenes.scene2d.ui.CheckBox;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
@@ -48,7 +49,8 @@ import com.mongodb.client.MongoCollection;
 import com.mygdx.game.utils.Geolocation;
 import com.mygdx.game.utils.MapRasterTiles;
 import com.mygdx.game.utils.PixelPosition;
-import com.mygdx.game.utils.User;
+import com.mygdx.game.utils.db.RestaurantRating;
+import com.mygdx.game.utils.db.User;
 import com.mygdx.game.utils.ZoomXY;
 import com.mygdx.game.utils.config.Config;
 import com.mygdx.game.utils.db.ConnectToDB;
@@ -64,8 +66,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-import jdk.internal.net.http.common.Pair;
-
 public class ProjectTest extends ScreenAdapter implements GestureDetector.GestureListener {
 
     public static SpriteBatch batch;
@@ -73,6 +73,7 @@ public class ProjectTest extends ScreenAdapter implements GestureDetector.Gestur
     public BitmapFont font;
     public BitmapFont fontName;
     public BitmapFont fontGreeting;
+    public BitmapFont font2;
 
     private Vector3 touchPosition;
 
@@ -95,15 +96,17 @@ public class ProjectTest extends ScreenAdapter implements GestureDetector.Gestur
     private final int WIDTH = MapRasterTiles.TILE_SIZE * NUM_TILES;
     private final int HEIGHT = MapRasterTiles.TILE_SIZE * NUM_TILES;
 
-    //databse connection
+    //database connection
     CodecProvider pojoCodecProvider = PojoCodecProvider.builder().automatic(true).build();
     CodecRegistry pojoCodecRegistry = fromRegistries(getDefaultCodecRegistry(), fromProviders(pojoCodecProvider));
     private final ConnectToDB db =  new ConnectToDB();
-    private final MongoCollection<Restaurant> collection = db.database.getCollection("resturants", Restaurant.class).withCodecRegistry(pojoCodecRegistry);
+    private final MongoCollection<Restaurant> restaurantCollection = db.database.getCollection("resturants", Restaurant.class).withCodecRegistry(pojoCodecRegistry);
     private final MongoCollection<User> userCollection = db.database.getCollection("users", User.class).withCodecRegistry(pojoCodecRegistry);
+    private final MongoCollection<RestaurantRating> restaurantRatingCollection = db.database.getCollection("restaurantratings", RestaurantRating.class).withCodecRegistry(pojoCodecRegistry);
     Array<PixelPosition> markerArr = new Array<>();
     Array<Restaurant> restaurants = new Array<>();
     Array<User> users = new Array<>();
+    Array<RestaurantRating> ratings = new Array<>();
 
     public static GlyphLayout layout = new GlyphLayout();
     Texture restInfo;
@@ -116,10 +119,13 @@ public class ProjectTest extends ScreenAdapter implements GestureDetector.Gestur
     String restaurantDisplayStreet = "null";
     String restaurantDisplayCenaBrezBona = "0";
     String restaurantDisplayCenaSBonom = "0";
+    String restaurantDisplayRating = "0";
 
     boolean loginActive = false;
     String filter = "null";
     String filterValue = "3";
+    float filterRating = 2.5f;
+    Label ratingAmountDisplay;
     PixelPosition markerToAdd = new PixelPosition(0,0);
 
     User loggedInAdmin = new User();
@@ -147,6 +153,10 @@ public class ProjectTest extends ScreenAdapter implements GestureDetector.Gestur
         font = new BitmapFont();
         font.getData().setScale(1.2f);
         font.setColor(Color.BLACK);
+
+        font2 = new BitmapFont();
+        font2.getData().setScale(1.2f);
+        font2.setColor(Color.BLACK);
 
         fontName = new BitmapFont();
         fontName.getData().setScale(2f);
@@ -195,12 +205,12 @@ public class ProjectTest extends ScreenAdapter implements GestureDetector.Gestur
         }
         layers.add(layer);
 
+        setRatings();
         setMarkers(filter, filterValue);
         setUsers();
+
         tiledMapRenderer = new OrthogonalTiledMapRenderer(tiledMap);
 
-
-        //skins
         TextButton.TextButtonStyle textButtonStyle = new TextButton.TextButtonStyle();
         textButtonStyle.font = fontName;
         textButtonStyle.fontColor = Color.WHITE;
@@ -261,14 +271,20 @@ public class ProjectTest extends ScreenAdapter implements GestureDetector.Gestur
             float widthPrice2 = layout.width;
             float heightPrice2 = layout.height;
 
-            float width =  Math.max(Math.max(Math.max(widthName, widthStreet), widthPrice1), widthPrice2);
-            float height = 2f*heightName + heightStreet + heightPrice1 + heightPrice2;
+            String ranking = "Restaurant rating: " + restaurantDisplayRating;
+            layout.setText(font, ranking);
+            float widthRating = layout.width;
+            float heightRating = layout.height;
+
+            float width = Math.max(Math.max(Math.max(Math.max(widthName, widthStreet), widthPrice1), widthPrice2), widthRating);
+            float height = 2f*heightName + heightStreet + heightPrice1 + heightPrice2 + heightRating;
 
             batch.draw(restInfo, positionOfDisplay.x + 10, positionOfDisplay.y, width + 20, height + 30);
-            fontName.draw(batch, restaurantDisplayName.toUpperCase(Locale.ROOT), positionOfDisplay.x + 20, positionOfDisplay.y + 4f*heightName + 20);
-            font.draw(batch, restaurantDisplayStreet, positionOfDisplay.x + 20, positionOfDisplay.y + 3.7f*heightStreet + 10);
-            font.draw(batch, stringCenaZBonom, positionOfDisplay.x + 20, positionOfDisplay.y + 2.5f*heightPrice1 + 10);
-            font.draw(batch, stringCenaBrezBona, positionOfDisplay.x + 20, positionOfDisplay.y + heightPrice2 + 10);
+            fontName.draw(batch, restaurantDisplayName.toUpperCase(Locale.ROOT), positionOfDisplay.x + 20, positionOfDisplay.y + 5f*heightName + 20);
+            font.draw(batch, restaurantDisplayStreet, positionOfDisplay.x + 20, positionOfDisplay.y + 4.9f*heightStreet + 10);
+            font.draw(batch, stringCenaZBonom, positionOfDisplay.x + 20, positionOfDisplay.y + 3.6f*heightPrice1 + 10);
+            font.draw(batch, stringCenaBrezBona, positionOfDisplay.x + 20, positionOfDisplay.y + 2.3f*heightPrice2 + 10);
+            font.draw(batch, ranking, positionOfDisplay.x + 20, positionOfDisplay.y + heightRating + 10);
         }
 
         if(!loggedInAdmin.getUsername().equals("null")){
@@ -286,29 +302,89 @@ public class ProjectTest extends ScreenAdapter implements GestureDetector.Gestur
         markerArr.clear();
         restaurants.clear();
 
-        FindIterable<Restaurant> docs = collection.find();// seznam restavracij
+        FindIterable<Restaurant> docs = restaurantCollection.find();// seznam restavracij
         for(Restaurant doc : docs){
             if(filter.equals("null")){
                 Geolocation MARKER_GEOLOCATION = new Geolocation(doc.getLoc().get(0), doc.getLoc().get(1));
                 PixelPosition marker = MapRasterTiles.getPixelPosition(MARKER_GEOLOCATION.lat, MARKER_GEOLOCATION.lng, MapRasterTiles.TILE_SIZE, ZOOM, beginTile.x, beginTile.y, HEIGHT);
                 markerArr.add(marker);
-                restaurants.add(doc);
+                float rating = getRatingForRest(doc);
+                restaurants.add(new Restaurant(doc, rating));
             }
             else if(filter.equals("price")){
                 if(toFloat(doc.getCenaSStudentskimBonom()) < toFloat(filterValue)){
                     Geolocation MARKER_GEOLOCATION = new Geolocation(doc.getLoc().get(0), doc.getLoc().get(1));
                     PixelPosition marker = MapRasterTiles.getPixelPosition(MARKER_GEOLOCATION.lat, MARKER_GEOLOCATION.lng, MapRasterTiles.TILE_SIZE, ZOOM, beginTile.x, beginTile.y, HEIGHT);
                     markerArr.add(marker);
-                    restaurants.add(doc);
+                    float rating = getRatingForRest(doc);
+                    restaurants.add(new Restaurant(doc, rating));
                 }
             }
+            else if(filter.equals("ranking")){
+                Geolocation MARKER_GEOLOCATION = new Geolocation(doc.getLoc().get(0), doc.getLoc().get(1));
+                PixelPosition marker = MapRasterTiles.getPixelPosition(MARKER_GEOLOCATION.lat, MARKER_GEOLOCATION.lng, MapRasterTiles.TILE_SIZE, ZOOM, beginTile.x, beginTile.y, HEIGHT);
+                float rating = getRatingForRest(doc);
+                if(rating > toFloat(filterValue)){
+                    markerArr.add(marker);
+                    restaurants.add(new Restaurant(doc, rating));
+                }
+            }
+            else{
+                String[] parts = filterValue.split("_");
+                String filterValue1 = parts[0];
+                String filterValue2 = parts[1];
+                if(toFloat(doc.getCenaSStudentskimBonom()) < toFloat(filterValue1)){
+                    Geolocation MARKER_GEOLOCATION = new Geolocation(doc.getLoc().get(0), doc.getLoc().get(1));
+                    PixelPosition marker = MapRasterTiles.getPixelPosition(MARKER_GEOLOCATION.lat, MARKER_GEOLOCATION.lng, MapRasterTiles.TILE_SIZE, ZOOM, beginTile.x, beginTile.y, HEIGHT);
+                    float rating = getRatingForRest(doc);
+                    if(rating > toFloat(filterValue2)){
+                        markerArr.add(marker);
+                        restaurants.add(new Restaurant(doc, rating));
+                    }
+                }
+            }
+        }
+
+        System.out.println("\n");
+        for(Restaurant rest : restaurants) {
+            System.out.println(rest.toString());
         }
     }
 
     private void setUsers() {
-        FindIterable<User> docs = userCollection.find();// seznam restavracij
-        for (User doc : docs)
+        FindIterable<User> docs = userCollection.find();// seznam userjev
+        for (User doc : docs){
             users.add(doc);
+        }
+    }
+
+    private void setRatings(){
+        FindIterable<RestaurantRating> docs = restaurantRatingCollection.find();// seznam ratingsov restavracij
+        for (RestaurantRating doc : docs){
+            if(!isRestaurantInArr(doc))
+                ratings.add(doc);
+        }
+    }
+
+    private boolean isRestaurantInArr(RestaurantRating rest) {
+        for(RestaurantRating restRating : ratings){
+            if(restRating.isSameRestaurant(rest)){
+                float newRating = (restRating.getStarRating() + rest.getStarRating())/2f;
+                newRating = (float) (Math.round(newRating * 10.0) / 10.0);
+                restRating.setStarRating(newRating);
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private float getRatingForRest(Restaurant rest){
+        for(RestaurantRating rating : ratings){
+            if(rating.getRestaurant_tk().equals(rest.getId())){
+                return rating.getStarRating();
+            }
+        }
+        return 0;
     }
 
     @Override
@@ -352,7 +428,6 @@ public class ProjectTest extends ScreenAdapter implements GestureDetector.Gestur
             if(!loginActive && !loggedInAdmin.getUsername().equals("null")) stage.addActor(createMarkerEntryUI());
             showRestaurantInfo = false;
             markerToAdd = marker;
-//            double[] marker2 = MapRasterTiles.getCoords(markerToAdd, MapRasterTiles.TILE_SIZE, ZOOM, beginTile.x, beginTile.y, HEIGHT);
         }
         else{
             removeActor("markerTable");
@@ -362,6 +437,7 @@ public class ProjectTest extends ScreenAdapter implements GestureDetector.Gestur
             restaurantDisplayStreet = rest.getLokacija();
             restaurantDisplayCenaBrezBona = rest.getCenaBrezStudentskegaBona();
             restaurantDisplayCenaSBonom = rest.getCenaSStudentskimBonom();
+            restaurantDisplayRating = (rest.getRating() != 0f) ? Float.toString(rest.getRating()) : "no ratings yet";
             positionOfDisplay = marker;
 
             batch.setProjectionMatrix(camera.combined);
@@ -375,19 +451,23 @@ public class ProjectTest extends ScreenAdapter implements GestureDetector.Gestur
 
     @Override
     public boolean longPress(float x, float y) {
-        float procX = x/900;
-        float procy = y/900;
-        procy = 1 - procy;
-        float woroldX = procX * WIDTH - 15;
-        float woroldY = procy * HEIGHT;
-        for(PixelPosition marker :markerArr){
-            if(woroldY < markerTexture.getHeight() + marker.y  && woroldY > marker.y){
-                if (woroldX < markerTexture.getWidth() + marker.x &&  woroldX > marker.x){
-                    markerArr.removeValue(marker,false);
+        if(!loggedInAdmin.getUsername().equals("null")){
+
+            float procX = x/900;
+            float procy = y/900;
+            procy = 1 - procy;
+            float woroldX = procX * WIDTH - 15;
+            float woroldY = procy * HEIGHT;
+            for(PixelPosition marker :markerArr){
+                if(woroldY < markerTexture.getHeight() + marker.y  && woroldY > marker.y){
+                    if (woroldX < markerTexture.getWidth() + marker.x &&  woroldX > marker.x){
+                        markerArr.removeValue(marker,false);
+                    }
                 }
             }
+            return true;
         }
-        return true;
+        return false;
     }
 
     @Override
@@ -452,8 +532,6 @@ public class ProjectTest extends ScreenAdapter implements GestureDetector.Gestur
 
         camera.position.x = MathUtils.clamp(camera.position.x, effectiveViewportWidth / 2f, WIDTH - effectiveViewportWidth / 2f);
         camera.position.y = MathUtils.clamp(camera.position.y, effectiveViewportHeight / 2f, HEIGHT - effectiveViewportHeight / 2f);
-//        camera.position.x = effectiveViewportWidth;
-//        camera.position.y = effectiveViewportHeight;
     }
 
     private Float toFloat(String strFloat){
@@ -527,14 +605,10 @@ public class ProjectTest extends ScreenAdapter implements GestureDetector.Gestur
         TextureRegion backgroundRegion = new TextureRegion(texture);
         table.setBackground(new TextureRegionDrawable(backgroundRegion));
 
+        // title
         Label showRestaurants = new Label("SHOW RESTAURANTS WITH: ", skin);
         showRestaurants.setColor(Color.ORANGE);
         showRestaurants.setFontScale(1.2f);
-
-        Label price = new Label("Meal price less then:", skin);
-        price.setWidth(50);
-        final TextField priceField = new TextField("", skin);
-        priceField.setTextFieldFilter(new NumberFilter());
 
         TextButton close = new TextButton("x", skin);
         close.setColor(Color.RED);
@@ -545,33 +619,102 @@ public class ProjectTest extends ScreenAdapter implements GestureDetector.Gestur
             }
         });
 
+        table.add(close).align(Align.right).row();
+        table.add(showRestaurants).padBottom(10).row();
+
+        // price filter
+        final CheckBox checkboxPrice = new CheckBox("", skin);
+        if(filter.equals("null") || filter.equals("ranking")) checkboxPrice.setChecked(false);
+        else if(filter.equals("price") || filter.equals("price_ranking")) checkboxPrice.setChecked(true);
+        System.out.println(filter);
+        System.out.println(checkboxPrice.isChecked());
+
+        Label price = new Label("Meal price less then:", skin);
+        price.setWidth(50);
+        final TextField priceField = new TextField("", skin);
+        priceField.setTextFieldFilter(new NumberFilter());
+
+        layout.setText(font2, "Meal price less then: ");
+        Table textTable = new Table();
+        textTable.add(checkboxPrice).padRight(10);
+        textTable.add(price).width(layout.width).left().padBottom(10);
+        textTable.add(priceField).width(50).padBottom(10).row();
+        table.add(textTable).colspan(2).row();
+
+        // rating filter
+        final CheckBox checkboxRanking = new CheckBox("", skin);
+        if(filter.equals("null") || filter.equals("price")) checkboxRanking.setChecked(false);
+        else if(filter.equals("ranking") || filter.equals("price_ranking")) checkboxRanking.setChecked(true);
+
+        Label rating = new Label("Rating more then:", skin);
+        rating.setWidth(50);
+        ratingAmountDisplay = new Label(String.valueOf(filterRating), skin);
+        Button plus = new Button(skin, "default");
+        Button minus = new Button(skin, "default2");
+
+        plus.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                if(filterRating < 5) {
+                    filterRating += 0.5;
+                    ratingAmountDisplay.setText(String.valueOf(filterRating));
+                }
+            }
+        });
+
+        minus.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                if(filterRating > 0.5){
+                    filterRating -= 0.5;
+                    ratingAmountDisplay.setText(String.valueOf(filterRating));
+                }
+            }
+        });
+
+//         buttons
+        Table moneyTable = new Table();
+        moneyTable.add(minus);
+        moneyTable.add(ratingAmountDisplay);
+        moneyTable.add(plus);
+        moneyTable.center();
+
+        layout.setText(font2, "Rating more then: ");
+        Table textTable2 = new Table();
+        textTable2.add(checkboxRanking).padRight(10);
+        textTable2.add(rating).width(layout.width).left().padBottom(10);
+        textTable2.add(moneyTable).width(50).padBottom(10).row();
+        table.add(textTable2).colspan(2).row();
+
         TextButton saveBtn = new TextButton("Find", skin);
         saveBtn.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                String str = priceField.getText();
-                if(str.contains(","))
-                    str = str.replaceAll(",", ".");
-
-                int num = 0, pos = 0;
-                for(int i = 0; i<str.length(); i++){
-                    if(str.charAt(i) == '.') {
-                        num++;
-                        pos = i;
-                        if(num >= 2){
-                            str = str.substring(0, pos);
-                            break;
-                        }
-                    }
+                boolean price = checkboxPrice.isChecked();
+                boolean ranking = checkboxRanking.isChecked();
+                if(!price && !ranking){
+                    filter = "null";
+                    setMarkers(filter, "0");
                 }
-
-                if(str.equals("")) {
-                    str = "20";
-                    priceField.setText("max price");
+                else if(price && !ranking){
+                    String str = correctFormPrice(priceField.getText());
+                    if(str.equals("20")) priceField.setText("max price");
+                    else priceField.setText(str);
+                    filter = "price";
+                    setMarkers(filter, str);
                 }
-                else
-                    priceField.setText(str);
-                setMarkers("price", str);
+                else if(!price && ranking){
+                    filter = "ranking";
+                    setMarkers(filter, Float.toString(filterRating));
+                }
+                else{
+                    String str = correctFormPrice(priceField.getText());
+                    if(str.equals("20")) priceField.setText("max price");
+                    else priceField.setText(str);
+                    String str2 = Float.toString(filterRating);
+                    filter = "price_ranking";
+                    setMarkers(filter, str+"_"+str2);
+                }
             }
         });
 
@@ -579,32 +722,48 @@ public class ProjectTest extends ScreenAdapter implements GestureDetector.Gestur
         clearBtn.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
+                priceField.setText("max price");
+                checkboxPrice.setChecked(false);
+                checkboxRanking.setChecked(false);
                 setMarkers("null", "null");
             }
         });
-        table.add(close).align(Align.right).row();
-
-        table.add(showRestaurants).padBottom(10).row();
-        layout.setText(font, "Meal price less then: ");
-
-
-        Table textTable = new Table();
-        textTable.add(price).width(layout.width).left().padBottom(10);
-        textTable.add(priceField).width(50).padBottom(10).row();
 
         Table buttonTable = new Table();
         buttonTable.add(saveBtn);
         buttonTable.add(clearBtn);
         buttonTable.center();
 
-        table.add(textTable).colspan(2).row();
         table.add(buttonTable).colspan(2);
-        table.pack();
 
-        table.setHeight(130);
-//        table.setPosition(0 - table.getWidth(), viewport.getWorldHeight() - table.getHeight());
+        table.pack();
+//        table.setWidth(250);
         table.setPosition(5, viewport.getWorldHeight() - table.getHeight());
         return table;
+    }
+
+    private String correctFormPrice(String str){
+        if(str.contains(","))
+            str = str.replaceAll(",", ".");
+
+        int num = 0, pos = 0;
+        for(int i = 0; i<str.length(); i++){
+            if(str.charAt(i) == '.') {
+                num++;
+                pos = i;
+                if(num >= 2){
+                    str = str.substring(0, pos);
+                    break;
+                }
+            }
+        }
+
+        if(str.equals("")) {
+            str = "20";
+            return "20";
+        }
+        else
+            return str;
     }
 
     private Actor createMarkerEntryUI(){
@@ -614,7 +773,6 @@ public class ProjectTest extends ScreenAdapter implements GestureDetector.Gestur
         Texture texture = new Texture(Gdx.files.internal("gray_background.jpg"));
         TextureRegion backgroundRegion = new TextureRegion(texture);
         table.setBackground(new TextureRegionDrawable(backgroundRegion));
-
 
         Label addMarker = new Label("Add restaurant info", skin);
         addMarker.setColor(Color.ORANGE);
@@ -682,7 +840,6 @@ public class ProjectTest extends ScreenAdapter implements GestureDetector.Gestur
     private Actor loginTable() {
         Table table = new Table();
         table.setName("loginTable");
-        table.debug();
 
         Texture texture = new Texture(Gdx.files.internal("gray_background.jpg"));
         TextureRegion backgroundRegion = new TextureRegion(texture);
