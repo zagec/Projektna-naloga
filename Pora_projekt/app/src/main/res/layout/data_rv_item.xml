@@ -46,7 +46,7 @@
                 android:layout_marginStart="@dimen/text_margin"
                 android:layout_marginTop="@dimen/margin_o1"
                 android:text="@string/dataInfo"
-                android:textColor="@color/orange"
+                android:textColor="@color/brown"
                 android:textSize="11sp" />
 
             <TextView
@@ -58,7 +58,7 @@
                 android:layout_marginStart="@dimen/text_margin"
                 android:layout_marginTop="@dimen/margin_o1"
                 android:text="@string/location"
-                android:textColor="@color/orange"
+                android:textColor="@color/brown"
                 android:textSize="11sp" />
 
             <TextView
@@ -70,7 +70,7 @@
                 android:layout_marginStart="@dimen/text_margin"
                 android:layout_marginTop="@dimen/margin_o1"
                 android:text="@string/dataTime"
-                android:textColor="@color/orange"
+                android:textColor="@color/brown"
                 android:textSize="11sp" />
 
             <TextView
@@ -82,7 +82,7 @@
                 android:layout_marginTop="@dimen/margin_o1"
                 android:layout_toEndOf="@id/dataTime"
                 android:text="@string/dataTimeValue"
-                android:textColor="@color/orange"
+                android:textColor="@color/brown"
                 android:textSize="11sp" />
 
             <TextView
@@ -93,7 +93,7 @@
                 android:layout_marginTop="@dimen/margin_o1"
                 android:layout_toEndOf="@id/dateTimeVal"
                 android:text="@string/mins"
-                android:textColor="@color/orange"
+                android:textColor="@color/brown"
                 android:textSize="11sp" />
 
 
