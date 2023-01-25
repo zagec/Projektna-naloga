@@ -298,6 +298,7 @@ public class ProjectTest extends ScreenAdapter implements GestureDetector.Gestur
 
         batch.end();
     }
+    
     private void setMarkers(String filter, String filterValue){
         markerArr.clear();
         restaurants.clear();
@@ -305,8 +306,10 @@ public class ProjectTest extends ScreenAdapter implements GestureDetector.Gestur
         FindIterable<Restaurant> docs = restaurantCollection.find();// seznam restavracij
         for(Restaurant doc : docs){
             if(filter.equals("null")){
+//                System.out.println(doc.getIme());
                 Geolocation MARKER_GEOLOCATION = new Geolocation(doc.getLoc().get(0), doc.getLoc().get(1));
                 PixelPosition marker = MapRasterTiles.getPixelPosition(MARKER_GEOLOCATION.lat, MARKER_GEOLOCATION.lng, MapRasterTiles.TILE_SIZE, ZOOM, beginTile.x, beginTile.y, HEIGHT);
+                if(doc.getIme().equals("ME GUSTA") || doc.getIme().equals("Cantante cafe Tabor") || doc.getIme().equals("Pizzeria in spageteria Al Capone")) System.out.println(marker.x + " " + marker.y);
                 markerArr.add(marker);
                 float rating = getRatingForRest(doc);
                 restaurants.add(new Restaurant(doc, rating));
@@ -343,11 +346,6 @@ public class ProjectTest extends ScreenAdapter implements GestureDetector.Gestur
                     }
                 }
             }
-        }
-
-        System.out.println("\n");
-        for(Restaurant rest : restaurants) {
-            System.out.println(rest.toString());
         }
     }
 
@@ -401,12 +399,14 @@ public class ProjectTest extends ScreenAdapter implements GestureDetector.Gestur
         return false;
     }
 
-    public Restaurant isOnMarker(int x, int y){
+    public Restaurant isOnMarker(int x, int y, float zoomVal){
         float w = (markerArr.get(markerArr.size-1).x - 20) + markerTexture.getWidth();
         float h = (markerArr.get(markerArr.size-1).y + markerTexture.getHeight());
+        float markerWidth = (markerTexture.getWidth());
+        float markerHeight = (markerTexture.getHeight());
         for(int i = 0; i < markerArr.size; i++){
-            if(x > (markerArr.get(i).x - 20) && x< (markerArr.get(i).x - 20) + markerTexture.getWidth() &&
-                    y > markerArr.get(i).y && y< markerArr.get(i).y + markerTexture.getHeight() ){
+            if(x > (markerArr.get(i).x - 15) && x< (markerArr.get(i).x - 15) + markerWidth &&
+                    y > markerArr.get(i).y && y< markerArr.get(i).y + markerHeight ){
                 return restaurants.get(i);
             }
         }
@@ -419,15 +419,26 @@ public class ProjectTest extends ScreenAdapter implements GestureDetector.Gestur
         float procX = x/900;
         float procY = y/900;
         procY = 1 - procY;
-        float worldX = procX * WIDTH - 15;
-        float worldY = procY * HEIGHT;
+
+        float zoomVal = camera.zoom / 2f;
+        float screenSize = WIDTH * zoomVal;
+        PixelPosition firstPX = new PixelPosition((int)(camera.position.x - (screenSize / 2)), (int)(camera.position.y - (screenSize / 2)));
+
+        float worldX = procX * screenSize - 15 + firstPX.x;
+        float worldY = procY *  screenSize + firstPX.y;
         PixelPosition marker = new PixelPosition((int)worldX,(int)worldY);
 
-        Restaurant rest = isOnMarker((int)worldX, (int)worldY);
+        System.out.println(firstPX.x + " " + screenSize);
+        System.out.println(worldX + 15);
+
+        Restaurant rest = isOnMarker((int)worldX, (int)worldY, camera.zoom);
         if(rest.getIme().equals("null")){
-            if(!loginActive && !loggedInAdmin.getUsername().equals("null")) stage.addActor(createMarkerEntryUI());
             showRestaurantInfo = false;
+            if(!loginActive && !loggedInAdmin.getUsername().equals("null")) stage.addActor(createMarkerEntryUI(marker));
             markerToAdd = marker;
+            markerArr.add(markerToAdd);
+            List<Double> l = new ArrayList<>();
+            restaurants.add(new Restaurant("null", "nic", "0","0", l));
         }
         else{
             removeActor("markerTable");
@@ -626,8 +637,6 @@ public class ProjectTest extends ScreenAdapter implements GestureDetector.Gestur
         final CheckBox checkboxPrice = new CheckBox("", skin);
         if(filter.equals("null") || filter.equals("ranking")) checkboxPrice.setChecked(false);
         else if(filter.equals("price") || filter.equals("price_ranking")) checkboxPrice.setChecked(true);
-        System.out.println(filter);
-        System.out.println(checkboxPrice.isChecked());
 
         Label price = new Label("Meal price less then:", skin);
         price.setWidth(50);
@@ -766,7 +775,7 @@ public class ProjectTest extends ScreenAdapter implements GestureDetector.Gestur
             return str;
     }
 
-    private Actor createMarkerEntryUI(){
+    private Actor createMarkerEntryUI(final PixelPosition markerInp){
         Table table = new Table();
         table.setName("markerTable");
 
@@ -819,6 +828,7 @@ public class ProjectTest extends ScreenAdapter implements GestureDetector.Gestur
                 String priceNoBon = priceWithoutBonField.getText();
                 if(!name.equals("") && !priceBon.equals("") && !priceNoBon.equals("")){
 //                    Geolocation MARKER_GEOLOCATION = new Geolocation(doc.getLoc().get(0), doc.getLoc().get(1));
+                    markerToAdd = markerInp;
                     markerArr.add(markerToAdd);
                     List<Double> l = new ArrayList<>();
                     restaurants.add(new Restaurant(name, "nic", priceBon,priceNoBon, l));
@@ -876,7 +886,6 @@ public class ProjectTest extends ScreenAdapter implements GestureDetector.Gestur
 //                    if(usr.getPassword().equals(username)){
 //                        if (passwordEncoder.matches(usr.getPassword(), password)) {
 ////                            loggedInAdmin = usr;
-//                            System.out.println("LOGGED");
 //                        }
 //                    }
 //
