@@ -26,7 +26,7 @@ public class Restaurant {
 
     }
 
-    public Restaurant(String ime, String lokacija, String cenaSStudentskimBonom, String cenaBrezStudentskegaBona, List<Double> loc) {
+    public Restaurant(ObjectId id, String ime, String lokacija, String cenaSStudentskimBonom, String cenaBrezStudentskegaBona, List<Double> loc) {
         ime = ime.replaceAll("š","s");
         ime = ime.replaceAll("Š","S");
         ime = ime.replaceAll("č","c");
@@ -41,6 +41,7 @@ public class Restaurant {
         lokacija = lokacija.replaceAll("ž","z");
         lokacija = lokacija.replaceAll("Ž","Z");
         this.ime = ime;
+        this.id = id;
         this.lokacija = lokacija;
         this.loc = loc;
         this.cenaSStudentskimBonom = cenaSStudentskimBonom;

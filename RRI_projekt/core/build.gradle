@@ -10,4 +10,6 @@ dependencies {
     implementation 'com.github.filosganga:geogson-core:1.2.21'
     implementation 'org.wololo:jts2geojson:0.18.1'
     implementation 'org.mongodb:mongodb-driver-sync:4.8.2'
+    implementation 'org.json:json:20211205'
+
 }
