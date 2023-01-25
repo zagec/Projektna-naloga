@@ -10,5 +10,7 @@
     <string name="mins">minutes</string>
     <string name="sendTestDataCars" translatable="false">Send cars num test</string>
     <string name="sendTestDataSteps" translatable="false">Send steps num test</string>
->>>>>>> Stashed changes
+    <string name="username" translatable="false">USERNAME</string>
+    <string name="passwd" translatable="false">PASSWORD</string>
+    >>>>>>> Stashed changes
 </resources>
