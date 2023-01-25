@@ -92,6 +92,8 @@ public class IntroScreen extends ScreenAdapter {
             ProjectTest.beginTile = new ZoomXY(ZOOM, centerTile.x - ((NUM_TILES - 1) / 2), centerTile.y - ((NUM_TILES - 1) / 2));
 
             ProjectTest.markerTexture = MapRasterTiles.getTextureMarker();
+            ProjectTest.markerTextureAdding = MapRasterTiles.getTextureMarkerAdding();
+            ProjectTest.markerTextureDelete = MapRasterTiles.getTextureMarkerDelete();
 
         } catch (IOException e) {
             e.printStackTrace();

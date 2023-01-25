@@ -22,8 +22,8 @@ public class RestaurantkoMap extends Game {
         assetManager = new AssetManager();
         assetManager.getLogger().setLevel(Logger.DEBUG);
 
-//        setScreen(new IntroScreen(this));
-        setScreen(new ProjectTest(this));
+        setScreen(new IntroScreen(this));
+//        setScreen(new ProjectTest(this));
     }
 
     @Override

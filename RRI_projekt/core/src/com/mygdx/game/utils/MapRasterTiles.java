@@ -74,6 +74,18 @@ public class MapRasterTiles {
         return getTexture(bis.toByteArray());
     }
 
+    public static Texture getTextureMarkerAdding() throws IOException {
+        URL url = new URL("https://api.geoapify.com/v1/icon/?type=material&color=%2324ff00&icon=restaurant&apiKey=613fe956ba024c21b30688b0b22219ee");
+        ByteArrayOutputStream bis = fetchTile(url);
+        return getTexture(bis.toByteArray());
+    }
+
+    public static Texture getTextureMarkerDelete() throws IOException {
+        URL url = new URL("https://api.geoapify.com/v1/icon/?type=material&color=%23ff0000&icon=restaurant&apiKey=613fe956ba024c21b30688b0b22219ee");
+        ByteArrayOutputStream bis = fetchTile(url);
+        return getTexture(bis.toByteArray());
+    }
+
     /**
      * Returns tiles for the area of size * size of provided center tile.
      *
@@ -180,6 +192,12 @@ public class MapRasterTiles {
         };
     }
 
+    public static double[] inverseProject(double x, double y, int tileSize) {
+        double lng = (x / tileSize) * 360 - 180;
+        double lat = Math.atan(Math.sinh((0.5 - (y / tileSize)) * (2 * Math.PI))) * 180 / Math.PI;
+        return new double[] {lat, lng};
+    }
+
     /**
      * Converts geolocation to pixel position.
      *
@@ -202,6 +220,17 @@ public class MapRasterTiles {
                 (int) (Math.floor(worldCoordinate[0] * scale) - (beginTileX * tileSize)),
                 height - (int) (Math.floor(worldCoordinate[1] * scale) - (beginTileY * tileSize) - 1)
         );
+    }
+
+    public static double[] getGeolocation(PixelPosition pixelPosition, int tileSize, int zoom, int beginTileX, int beginTileY, int height) {
+        double scale = Math.pow(2, zoom);
+        // reverse the image coordinates to world coordinates
+        double[] worldCoordinate = new double[]{
+                (pixelPosition.x + (beginTileX * tileSize)) / scale,
+                ((height - pixelPosition.y - 1) + (beginTileY * tileSize)) / scale
+        };
+        // Use the inverse projection function to convert world coordinates to latitude and longitude
+        return inverseProject(worldCoordinate[0], worldCoordinate[1], tileSize);
     }
 
 //    public static double[] getCoords(PixelPosition marker, double lat, double lng) {
