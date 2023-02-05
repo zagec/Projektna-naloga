@@ -34,12 +34,16 @@ public class Restaurant {
         ime = ime.replaceAll("ž","z");
         ime = ime.replaceAll("Ž","Z");
 
+        System.out.println(lokacija.replaceAll("š","s"));
+        lokacija = lokacija.replaceAll("š","s");
         lokacija = lokacija.replaceAll("š","s");
         lokacija = lokacija.replaceAll("Š","S");
         lokacija = lokacija.replaceAll("č","c");
         lokacija = lokacija.replaceAll("Č","C");
         lokacija = lokacija.replaceAll("ž","z");
         lokacija = lokacija.replaceAll("Ž","Z");
+        System.out.println(lokacija);
+
         this.ime = ime;
         this.id = id;
         this.lokacija = lokacija;

@@ -34,6 +34,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.CheckBox;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.ui.TextArea;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
@@ -146,6 +147,7 @@ public class ProjectTest extends ScreenAdapter implements GestureDetector.Gestur
     String filterValue = "3";
     float filterRating = 2.5f;
     String filterPrice= "max";
+    String adminLoggedIn= "";
     Label ratingAmountDisplay;
     User loggedInAdmin = new User();
 
@@ -321,15 +323,6 @@ public class ProjectTest extends ScreenAdapter implements GestureDetector.Gestur
             font.draw(batch, ranking, tempX + 20, positionOfDisplay.y + heightRating + 10);
         }
 
-        if(!loggedInAdmin.getUsername().equals("null")){
-            String greeting = "Hello admin " + loggedInAdmin.getUsername();
-            layout.setText(fontGreeting, greeting);
-            float widthGreeting = layout.width;
-            float heightGreeting = layout.height;
-
-            fontGreeting.draw(batch, greeting, WIDTH - widthGreeting - 20, HEIGHT - heightGreeting -150 );
-        }
-
         batch.end();
     }
     
@@ -400,6 +393,7 @@ public class ProjectTest extends ScreenAdapter implements GestureDetector.Gestur
         String streetName = json.getJSONArray("results").getJSONObject(0).getString("formatted_address");
         streetName = streetName.replace(" 2000", "");
         streetName = streetName.replace(", Slovenia", "");
+
         return streetName;
 //    }
     }
@@ -517,8 +511,33 @@ public class ProjectTest extends ScreenAdapter implements GestureDetector.Gestur
     @Override
     public boolean longPress(float x, float y) {
         if(!loggedInAdmin.getUsername().equals("null")){
-            stage.addActor(deleteMarkerTable(x, y));
-            removeActor("remove");
+            Marker delete = null;
+            float procX = x/900;
+            float procY = y/900;
+            procY = 1 - procY;
+            float zoomVal = camera.zoom / 2f;
+            float screenSize = WIDTH * zoomVal;
+            PixelPosition firstPX = new PixelPosition((int)(camera.position.x - (screenSize / 2)), (int)(camera.position.y - (screenSize / 2)));
+
+            int markerIndex = 0;
+            float worldX = procX * screenSize - 15 + firstPX.x;
+            float worldY = procY *  screenSize + firstPX.y;
+
+            float markerWidth = (markerTexture.getWidth());
+            float markerHeight = (markerTexture.getHeight());
+            for(int i = 0; i < markerArr.size; i++){
+                if(worldX > (markerArr.get(i).getPos().x - 15) && worldX< (markerArr.get(i).getPos().x - 15) + markerWidth &&
+                        worldY > markerArr.get(i).getPos().y && worldY< markerArr.get(i).getPos().y + markerHeight ){
+                    markerArr.get(i).setText(markerTextureDelete);
+                    delete = markerArr.get(i);
+                    markerIndex = i;
+                }
+            }
+
+            if(delete != null){
+                stage.addActor(deleteMarkerTable(worldX, worldY, delete, markerIndex));
+                removeActor("remove");
+            }
             return true;
         }
         return false;
@@ -560,7 +579,7 @@ public class ProjectTest extends ScreenAdapter implements GestureDetector.Gestur
     }
 
     private void handleInput() {
-        if(!loginActive && !deleteMarkerActive){
+        if(!loginActive && !deleteMarkerActive && !addingMarker){
             if (Gdx.input.isKeyPressed(Input.Keys.E)) {
                 camera.zoom += 0.02;
             }
@@ -638,6 +657,7 @@ public class ProjectTest extends ScreenAdapter implements GestureDetector.Gestur
             public void clicked(InputEvent event, float x, float y) {
                 loggedInAdmin = new User();
                 removeActor("adminLogout");
+                removeActor("adminHello");
                 stage.addActor(loginBtn());
             }
         });
@@ -645,6 +665,15 @@ public class ProjectTest extends ScreenAdapter implements GestureDetector.Gestur
         logoutBtn.setPosition(viewport.getWorldWidth() - logoutBtn.getWidth() - 5, viewport.getWorldHeight() - logoutBtn.getHeight() - 5);
 
         return logoutBtn;
+    }
+
+    private Actor helloAdmin(String text) {
+        Label txt = new Label("Hello admin " + text, skin);
+        txt.setName("adminHello");
+
+        txt.setPosition(viewport.getWorldWidth() - txt.getWidth() - 5, viewport.getWorldHeight() - txt.getHeight() - 40);
+
+        return txt;
     }
 
     private void removeActor(String actor){
@@ -896,7 +925,8 @@ public class ProjectTest extends ScreenAdapter implements GestureDetector.Gestur
                     l.add(geo[0]);
                     l.add(geo[1]);
                     try {
-                        restaurants.add(new Restaurant(new ObjectId(), name, getStreet(l), priceBon,priceNoBon, l));
+                        Restaurant rest = new Restaurant(new ObjectId(), name, getStreet(l), priceBon,priceNoBon, l);
+                        restaurants.add(rest);
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
@@ -964,6 +994,7 @@ public class ProjectTest extends ScreenAdapter implements GestureDetector.Gestur
                     if(usr.getUsername().equals(username)){
                         loggedInAdmin = usr;
                         stage.addActor(logoutBtn());
+                        stage.addActor(helloAdmin(loggedInAdmin.getUsername()));
                         removeActor("adminLogin");
                     }
                 }
@@ -994,30 +1025,9 @@ public class ProjectTest extends ScreenAdapter implements GestureDetector.Gestur
         return table;
     }
 
-    private Actor deleteMarkerTable(final float posX, final float posY) {
+    private Actor deleteMarkerTable(final float worldX, final float worldY, Marker delete, final int markerIndex) {
         Table table = new Table();
         table.setName("deleteMarkerTable");
-
-        Marker delete = null;
-        float procX = posX/900;
-        float procY = posY/900;
-        procY = 1 - procY;
-        float zoomVal = camera.zoom / 2f;
-        float screenSize = WIDTH * zoomVal;
-        PixelPosition firstPX = new PixelPosition((int)(camera.position.x - (screenSize / 2)), (int)(camera.position.y - (screenSize / 2)));
-
-        int markerIndex = 0;
-        float worldX = procX * screenSize - 15 + firstPX.x;
-        float worldY = procY *  screenSize + firstPX.y;
-        for(int i=0; i<markerArr.size; i++){
-            if(worldY < markerTexture.getHeight() + markerArr.get(i).getPos().y  && worldY > markerArr.get(i).getPos().y){
-                if (worldX < markerTexture.getWidth() + markerArr.get(i).getPos().x &&  worldX > markerArr.get(i).getPos().x){
-                    markerArr.get(i).setText(markerTextureDelete);
-                    delete = markerArr.get(i);
-                    markerIndex = i;
-                }
-            }
-        }
         
         final Restaurant rest = isOnMarker((int)worldX, (int)worldY, camera.zoom);
         if(rest.getIme().equals("null")) {
@@ -1038,12 +1048,14 @@ public class ProjectTest extends ScreenAdapter implements GestureDetector.Gestur
         table.add(label).colspan(2).padBottom(10).row();
         table.add(text).row();
 
+        final int finalMarkerIndex = markerIndex;
         TextButton saveBtn = new TextButton("Ja", skin);
         final Marker finalDelete = delete;
         saveBtn.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 markerArr.removeValue(finalDelete,false);
+                restaurants.removeIndex(finalMarkerIndex);
                 deletedRestaurants.add(rest);
                 removeActor("deleteMarkerTable");
                 deleteMarkerActive = false;
@@ -1051,7 +1063,6 @@ public class ProjectTest extends ScreenAdapter implements GestureDetector.Gestur
         });
 
         TextButton backBtn = new TextButton("Ne", skin);
-        final int finalMarkerIndex = markerIndex;
         backBtn.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
