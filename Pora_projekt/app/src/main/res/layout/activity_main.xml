@@ -10,9 +10,9 @@
         android:id="@+id/view"
         android:layout_width="match_parent"
         android:layout_height="30dp"
+        android:background="@color/orange"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        android:background="@color/orange"
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
@@ -27,67 +27,82 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/view" />
 
-<!--    <View-->
-<!--        android:layout_width="0dp"-->
-<!--        android:layout_height="100dp"-->
-<!--        android:layout_marginTop="10dp"-->
-<!--        android:background="@drawable/rounded_corners_frame"-->
-<!--        app:layout_constraintEnd_toEndOf="parent"-->
-<!--        app:layout_constraintStart_toStartOf="parent"-->
-<!--        app:layout_constraintTop_toBottomOf="@+id/view"-->
-<!--        app:layout_constraintWidth_percent="0.9" />-->
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/dataRV"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_above="@+id/view"
-        android:layout_marginStart="@dimen/margin_1"
-        android:layout_marginTop="@dimen/text_margin"
-        android:layout_marginEnd="@dimen/margin_1"
+        android:layout_marginTop="@dimen/margin_1"
         android:scrollbars="vertical"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/view" />
 
     <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/btnPeople"
+        android:id="@+id/btnTakePicture"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/margin_2"
-        android:layout_marginStart="@dimen/margin_4"
+        android:layout_marginTop="@dimen/margin_5"
         android:background="@drawable/btn"
         android:paddingTop="0dp"
         android:paddingBottom="0dp"
-        android:textSize="8sp"
-
-        android:text="@string/sendTestDataPeople"
+        android:text="@string/takePicture"
+        android:textSize="@dimen/text_size"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/dataRV" />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/btnPeople"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/margin_4"
+        android:background="@drawable/btn"
+        android:text="@string/sendPeople"
+        android:textSize="12sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/btnCars"
+        app:layout_constraintTop_toBottomOf="@+id/btnTakePicture" />
 
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/btnCars"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/margin_2"
-        android:layout_marginEnd="@dimen/margin_4"
+        android:layout_marginTop="@dimen/margin_4"
         android:background="@drawable/btn"
         android:text="@string/sendTestDataCars"
-        android:textSize="8sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/dataRV" />
+        android:textSize="@dimen/text_size"
+        app:layout_constraintEnd_toStartOf="@+id/btnPeople"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/btnSteps"
+        app:layout_constraintTop_toBottomOf="@+id/btnTakePicture" />
 
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/btnSteps"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="@dimen/margin_4"
         android:background="@drawable/btn"
         android:text="@string/sendTestDataSteps"
-        android:textSize="8sp"
+        android:textSize="@dimen/text_size"
         app:layout_constraintEnd_toStartOf="@+id/btnCars"
-        app:layout_constraintStart_toEndOf="@+id/btnPeople"
-        app:layout_constraintTop_toBottomOf="@+id/dataRV" />
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/btnTakePicture" />
+
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="44dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/btnCars"
+        tools:srcCompat="@tools:sample/avatars" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "1005292172565",
+    "firebase_url": "https://mykd-e632c-default-rtdb.europe-west1.firebasedatabase.app",
+    "project_id": "mykd-e632c",
+    "storage_bucket": "mykd-e632c.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1005292172565:android:4faee5d204ebec850ca51c",
+        "android_client_info": {
+          "package_name": "com.example.restaurantkodatagetter"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1005292172565-les0tvqs84hfljln3iqm26ps25fbbq4n.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.restaurantkodatagetter",
+            "certificate_hash": "35ed1d092c76dd2cafe36bbd4c38ff6321054d9f"
+          }
+        },
+        {
+          "client_id": "1005292172565-4rdnf2n784lel42e9i8p0eljgmcevjqd.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBn9goF87JE2sWtQdSppzh9vLQbfzTJ48E"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1005292172565-4rdnf2n784lel42e9i8p0eljgmcevjqd.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -13,4 +13,6 @@
     <dimen name="margin_1">16dp</dimen>
     <dimen name="margin_o1">5dp</dimen>
 
+    <dimen name="text_size">12sp</dimen>
+
 </resources>
